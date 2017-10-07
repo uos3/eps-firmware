@@ -1,0 +1,236 @@
+﻿<UserControl x:Class="CubeSatPowerTestInterface.RegisterView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:CubeSatPowerTestInterface"
+             mc:Ignorable="d" 
+             d:DesignHeight="20" d:DesignWidth="300"
+             x:Name="MyUserControl">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="45" />
+            <ColumnDefinition Width="60" />
+            <ColumnDefinition Width="192" />
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="Consolas" />
+            </Style>
+        </Grid.Resources>
+        <TextBlock Text="{Binding RegName}" Margin="1" />
+        <TextBlock Text="{Binding RegValue}" Grid.Column="1" Margin="1" />
+        <TextBlock Text="{Binding RegConvert}" Grid.Column="2" Margin="1" />
+        <Grid Grid.Column="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <SolidColorBrush x:Key="highlightedBrush" Color="DarkGray" />
+                    <Style TargetType="Rectangle" x:Key="bitBase">
+                        <Setter Property="Stroke" Value="Black" />
+                        <Setter Property="Margin" Value="1" />
+                        <Setter Property="Height" Value="{Binding Path=ActualWidth,RelativeSource={RelativeSource Self}}" />
+                        <Setter Property="RadiusX" Value="1" />
+                        <Setter Property="RadiusY" Value="1" />
+                    </Style>
+                </ResourceDictionary>
+            </Grid.Resources>
+
+            <!-- Well this code sucks -->
+            <Rectangle x:Name="f15Rect" Grid.Column="0">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B15}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f14Rect" Grid.Column="1">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B14}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f13Rect" Grid.Column="2">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B13}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f12Rect" Grid.Column="3">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B12}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f11Rect" Grid.Column="4">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B11}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f10Rect" Grid.Column="5">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B10}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f9Rect" Grid.Column="6">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[9]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f8Rect" Grid.Column="7">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[8]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f7Rect" Grid.Column="8">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[7]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f6Rect" Grid.Column="9">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[6]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f5Rect" Grid.Column="10">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[5]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f4Rect" Grid.Column="11">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[4]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f3Rect" Grid.Column="12">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[3]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f2Rect" Grid.Column="13">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[2]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f1Rect" Grid.Column="14">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[1]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+            <Rectangle x:Name="f0Rect" Grid.Column="15">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle" BasedOn="{StaticResource bitBase}">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding B[0]}" Value="True">
+                                <Setter Property="Fill" Value="{StaticResource highlightedBrush}" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
+        </Grid>
+    </Grid>
+</UserControl>
