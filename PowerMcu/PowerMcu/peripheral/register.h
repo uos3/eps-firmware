@@ -11,6 +11,7 @@
 uint16_t register_get(uint8_t id);
 void register_set(uint8_t id, uint16_t value);
 void register_init();
+uint16_t convert_adc_to_current(uint16_t csense, uint16_t shunt_resistance);
 
 #define CONFIG     0x00
 #define STATUS     0x01
@@ -71,5 +72,10 @@ void register_init();
 #define MPPT_BUS_V 0x30
 #define CRC_ER_CNT 0x31
 #define DROP_CNT   0x32
+
+#define SW_OFF     0x33
+
+// Parameters
+#define ALL_RAILS  63
 
 #endif /* REGISTER_H_ */

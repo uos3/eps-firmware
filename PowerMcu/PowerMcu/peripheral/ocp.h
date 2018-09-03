@@ -18,7 +18,7 @@ void ocp_process();
 //     1 - On (except in overcurrent state)
 //     rails & 0x1 is for OCP0
 //     rails & 0x2 is for OCP1 etc
-void ocp_set_rails_activated(uint8_t value);
+void ocp_activate_rail(uint8_t value);
 
 // Gets the active state of each rail.
 // Return value: bitfield with the state of each rail

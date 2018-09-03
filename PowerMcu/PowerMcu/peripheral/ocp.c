@@ -92,12 +92,26 @@ void ocp_process()
 	lastActivated = activated;
 }
 
-void ocp_set_rails_activated(uint8_t value)
+void ocp_activate_rail(uint8_t ocp_rail)
 {
-	//uint8_t switchDiff = value ^ ocp_get_rails_switched_state();
-	//forcedLowPins |= switchDiff;
-	switches_set_direction(~value);
-	ocp_process();
+    uint8_t switchDiff = 0x3F & ~switches_get_direction();
+    switchDiff |= ocp_rail;
+    switches_set_direction(0x3F & ~switchDiff);
+
+    uint8_t temp = switches_get_direction();
+
+    ocp_process();
+}
+
+void ocp_deactivate_rail(uint8_t ocp_rail)
+{
+    uint8_t switchDiff = switches_get_direction();
+    switchDiff |= ocp_rail;
+    switches_set_direction(switchDiff);
+
+    uint8_t temp = switches_get_direction();
+
+    ocp_process();
 }
 
 uint8_t ocp_get_rails_activated()
