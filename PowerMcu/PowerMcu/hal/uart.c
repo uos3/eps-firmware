@@ -49,11 +49,14 @@ uint8_t uart_rx(uint8_t *buffer, uint8_t offset, uint8_t count)
 	return i;
 }
 
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCIAB0RX_ISR(void)
-{
-	circ_push(&rxBuffer, UCA0RXBUF);
-	core_check_wakeup(UART);
+void uart_handle_rx_interrupt(){
+    circ_push(&rxBuffer, UCA0RXBUF);
 }
 
 
+//#pragma vector=USCIAB0RX_VECTOR
+//__interrupt void USCIAB0RX_ISR(void)
+//{
+//    circ_push(&rxBuffer, UCA0RXBUF);
+//    core_check_wakeup(UART);
+//}

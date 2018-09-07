@@ -7,11 +7,14 @@
 
 #include <peripheral/errormon.h>
 #include "hal/switches.h"
+#include "peripheral/battery.h"
 #include "register.h"
 #include "sense.h"
 #include "status.h"
 #include "interrupt.h"
 #include "ocp.h"
+
+uint8_t* i2c_buff;
 
 void register_init()
 {
@@ -32,8 +35,8 @@ uint16_t register_get(uint8_t id)
 	case POWER: /*3*/return switches_get();
 
 	case BAT_V: /*4*/return sense_get(VBATT_VSENSE);
-	case BAT_I:      return 0; // TODO: Implement over I2C to battery board.
-	case BAT_T:      return 0; // TODO: Implement over I2C to battery board.
+    case BAT_I:      return get_battery_telemetry(BAT_I2C_IBAT, i2c_buff);
+    case BAT_T:      return get_battery_telemetry(BAT_I2C_TEMPBRD, i2c_buff);
 
 	case SOLAR_N1_I: return sense_get(PV_NORTH1_CSENSE_MUX);
 	case SOLAR_N2_I: return sense_get(PV_NORTH2_CSENSE_MUX);
