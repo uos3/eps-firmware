@@ -3,11 +3,13 @@
  *
  *  Created on: 9 Oct 2015
  *      Author: Tom
+ *			Altered by: Tom Piga
  */
 
 #include <hal/stopwatch.h>
 #include <peripheral/errormon.h>
 #include "hal/uart.h"
+#include "hal/i2c.h"
 #include <stdint.h>
 
 #include "register.h"
@@ -23,6 +25,12 @@ static uint8_t msgBufferLength = 0;
 void comm_init()
 {
 	uart_init();
+
+	// Initialise I2C communication
+	i2c_masterInit(I2C_CLOCKSOURCE_SMCLK, 80, I2C_TRANSMIT_MODE);
+//      UCB0I2CIE = UCNACKIE;
+	i2c_enableRXInterrupt();
+	i2c_enableTXInterrupt();
 }
 
 void comm_process()
@@ -113,4 +121,23 @@ static void respond(uint8_t regId, uint8_t count)
 	responseBuffer[3 + count * 2] = (crcOut >> 8) & 0xFF;
 
 	uart_tx(responseBuffer, 0, 4 + count * 2);
+}
+
+/* On a UART or an I2C transmission to us, flag the need for processing the
+ * incoming packet */
+#pragma vector = USCIAB0RX_VECTOR
+__interrupt void USCIAB0RX_ISR(void)
+{
+    // If UART (Port A) interrupt is enabled, and there is a pending interrupt
+    if ((IFG2 & UCA0RXIFG) && (IE2 & UCA0RXIE)) {
+        uart_handle_rx_interrupt();
+
+        // Only available in ISR
+        core_check_wakeup(UART);
+    }
+
+    // If interrupt was triggered for something else instead, most likely for I2C
+    else {
+        i2c_handle_rx_interrupt();
+    }
 }

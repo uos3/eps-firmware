@@ -1,8 +1,9 @@
 /*
- * uart.h
+ * i2c.h
  *
  *  Created on: 5 Sept 2018
- *      Author: Ossicode, ported by Tom Piga
+ *      Author: Ossicode
+ *      Ported by: Tom Piga
  */
 
 #ifndef HAL_I2C_H_

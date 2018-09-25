@@ -2,7 +2,10 @@
  * uart.c
  *
  *  Created on: 5 Sept 2018
- *      Author: Ossicode, ported by Tom Piga
+ *      Author: Ossicode
+ *      Ported by: Tom Piga
+ *      Note from Tom: don't worry about the to-do(s), they shouldn't be
+ *      necessary for basic I2C functionality.
  */
 
 #include "i2c.h"
@@ -205,8 +208,7 @@ void i2c_busRecovery(void)
     P3SEL &= ~(I2C_SDA_PIN + I2C_SCL_PIN);      // set pins to GPIO
     P3DIR |= I2C_SDA_PIN + I2C_SCL_PIN;         // set output direction
     P3OUT |= I2C_SDA_PIN;                       // set SDA HIGH
-    for (i = 0 ; i < 9 ; i++)
-    {
+    for (i = 0 ; i < 9 ; i++){
         P3OUT |= I2C_SCL_PIN;                   // toggle SCL 9 times
         // TODO: delay
         P3OUT &= ~I2C_SCL_PIN;
@@ -221,7 +223,6 @@ void i2c_handle_rx_interrupt(){
         if (UCB0CTL0 & UCMST){
             UCB0CTL1 |= UCTXSTP;
         }
-
         //IFG2 &= ~UCB0TXIFG;
     UCB0STAT &= ~UCNACKIFG;
     //  i2c_disableRXInterrupt();
@@ -230,8 +231,7 @@ void i2c_handle_rx_interrupt(){
     }
 
     // Slave mode: when start condition is detected
-    if (UCB0STAT & UCSTTIFG)
-    {
+    if (UCB0STAT & UCSTTIFG){
         UCB0STAT &= ~UCSTTIFG;                    // Clear start condition int flag
         // initialize something
         slaveData = defaultSlaveData;
@@ -243,32 +243,23 @@ void i2c_handle_rx_interrupt(){
 __interrupt void USCIAB0TX_ISR(void)
 {
     // uart interrupt
-    if ((IFG2 & UCA0TXIFG) && (IE2 & UCA0TXIE))
-    {
+    if ((IFG2 & UCA0TXIFG) && (IE2 & UCA0TXIE)){
         IE2 &= ~UCA0TXIE;
     }
 
     // i2c RX interrupt
-    if (IFG2 & UCB0RXIFG)
-    {
+    if (IFG2 & UCB0RXIFG){
         // Master
-        if (UCB0CTL0 & UCMST)
-        {
+        if (UCB0CTL0 & UCMST) {
             //easier when we count down and compare for the one last byte to initiate STOP condition
             masterRxIndex--;
-            if (masterRxIndex)
-            {
+            if (masterRxIndex){
                 *masterRxData = UCB0RXBUF;
                 masterRxData++;
                 if (masterRxIndex == 1)
-                {
                     UCB0CTL1 |= UCTXSTP;
 
-                }
-
-            }
-            else
-            {
+            } else {
                 *masterRxData = UCB0RXBUF;
 
                 // when all bytes we want are received
@@ -278,15 +269,10 @@ __interrupt void USCIAB0TX_ISR(void)
                 // Back to Low Power Mode
                 i2cRxDone = 1;
                 __bic_SR_register_on_exit(LPM3_bits);
-
             }
-        }
-        else
-        {
+        } else {
             // Slave
-            if(slaveIndex-1)
-            {
-
+            if(slaveIndex-1){
                 // check the first data is matched to beacon packet address and store the address value for later use
                 if (slaveIndex == defaultSlaveIndex)
                 {
@@ -299,9 +285,7 @@ __interrupt void USCIAB0TX_ISR(void)
                         // TODO: check whether below is correct
                         slaveData = slaveData + beaconPacketAddress*8;
                         slaveIndex = 8;
-                    }
-                    else
-                    {
+                    } else {
                         // set to default address
                         beaconPacketAddress = 0x0;
                         // NOT the internal address we want
@@ -310,18 +294,12 @@ __interrupt void USCIAB0TX_ISR(void)
                         UCB0CTL1 |= UCTXNACK;
                         // TODO: initialize variables
                     }
-                }
-                else
-                {
+                } else {
                     *slaveData = UCB0RXBUF;
                     slaveData++;
                     slaveIndex --;
                 }
-
-            }
-            else
-            {
-
+            } else {
                 // when we receive all data
                 *slaveData = UCB0RXBUF;
                 i2cRxDone = 1;
@@ -331,23 +309,16 @@ __interrupt void USCIAB0TX_ISR(void)
     }
 
     // i2c TX interrupt
-    if (IFG2 & UCB0TXIFG)
-    {
+    if (IFG2 & UCB0TXIFG){
         // Master
-        if (UCB0CTL0 & UCMST)
-        {
-
+        if (UCB0CTL0 & UCMST){
             //easier when we count down and compare for the one last byte to initiate STOP condition
-            if (masterTxIndex)
-            {
+            if (masterTxIndex){
                 UCB0TXBUF=*masterTxData;
                 masterTxData++;
                 // When we send only one byte, do this after sending one byte
                 masterTxIndex--;
-
-            }
-            else
-            {
+            } else {
                 // When we send only one byte, do this after sending one byte
                 UCB0CTL1 |= UCTXSTP;                // Generate I2C stop condition right after sending last data
                 IFG2 &= ~UCB0TXIFG;
@@ -360,37 +331,28 @@ __interrupt void USCIAB0TX_ISR(void)
                 i2cTxDone = 1;
                 __bic_SR_register_on_exit(LPM3_bits);
             }
-        }
-        else
-        {
+        } else {
             // Slave
-            if (slaveIndex - 1)
-            {
+            if (slaveIndex - 1) {
                 // first byte to send?
-                if (slaveIndex == defaultSlaveIndex)
-                {
+                if (slaveIndex == defaultSlaveIndex) {
                         slaveData = slaveData + beaconPacketAddress*8;
                         slaveIndex = 8;
                         UCB0TXBUF = *slaveData;
                         slaveData++;
                         slaveIndex --;
-                }
-                else
-                {
+                } else {
                     UCB0TXBUF = *slaveData;
                     slaveData++;
                     slaveIndex --;
                 }
-            }
-            else
-            {
+            } else {
                 // TODO: when all sent, send NACK??
                 //UCB0CTL1 |=UCTXNACK;
                 // when we transmit all the data
                 UCB0TXBUF = *slaveData;
                 i2cTxDone = 1;
                 __bic_SR_register_on_exit(LPM3_bits);
-
             }
         }
     }
