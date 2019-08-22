@@ -17,14 +17,15 @@ uint16_t convert_adc_to_current(uint16_t csense, uint16_t shunt_resistance);
 #define STATUS     0x01         //This shows which lines have experienced an OCP event, top bit indicates packet timeout event, second indicates crc event
 
 #define SW_ON      0x02         //ID's
-#define SW_ON_5    (1<<5)       //LNA           Each bit in byte sent to address corresponds with a rail and state (on or off)
+#define SW_ON_5    (1<<5)       //LNA           Each bit in byte sent to SW_ON corresponds with a rail and state (on or off)
 #define SW_ON_4    (1<<4)       //GPS Rx
 #define SW_ON_3    (1<<3)       //Flight MCU
 #define SW_ON_2    (1<<2)       //Cam
 #define SW_ON_1    (1<<1)       //Rx Ground Comms
 #define SW_ON_0    (1<<0)       //Tx Ground Comms
+#define ALL_RAILS  63
 
-#define POWER      0x03         //Up to 128 registers allowed by by comms packets address space
+#define RESET      0x03         //Up to 128 registers allowed by by comms packets address space
 #define BAT_V      0x04
 #define BAT_I      0x05
 #define BAT_T      0x06
@@ -74,8 +75,5 @@ uint16_t convert_adc_to_current(uint16_t csense, uint16_t shunt_resistance);
 #define DROP_CNT   0x32
 #define SW_OFF     0x33
 #define KNOWN_VAL  0x34
-
-// Parameters
-#define ALL_RAILS  63
 
 #endif /* REGISTER_H_ */

@@ -10,12 +10,13 @@
 
 void intpin_init()
 {
-    P3DIR |= BIT6;      //Setting it to output
+    P3DIR |= BIT6;      //Setting it to input
 	P3OUT |= BIT6;      //Outputting 1
+
 
 }
 
-void intpin_set(uint8_t interruptActive)        //High to low triggers TOBC interrrupt
+void intpin_set(uint8_t interruptActive)        //High to low triggers TOBC interrupt
 {
 	if (interruptActive)
 	{

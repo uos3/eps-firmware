@@ -18,6 +18,7 @@ core.obj: C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/mach
 core.obj: C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/machine/_stdint.h
 core.obj: C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/sys/_stdint.h
 core.obj: ../peripheral/ocp.h
+core.obj: ../peripheral/RailOffCheck.h
 
 ../core.c: 
 C:/ti/ccs910/ccs/ccs_base/msp430/include/msp430.h: 
@@ -37,3 +38,4 @@ C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/machine/_types
 C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/machine/_stdint.h: 
 C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/sys/_stdint.h: 
 ../peripheral/ocp.h: 
+../peripheral/RailOffCheck.h: 

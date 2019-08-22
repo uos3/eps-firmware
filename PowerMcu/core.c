@@ -11,7 +11,7 @@
 #include "util/DCO_Library.h"
 #include "hal/watchdog.h"
 #include "peripheral/ocp.h"
-
+#include "peripheral/RailOffCheck.h"
 int _wakeReasons;
 int _wakeEventsOccurred;
 
@@ -80,14 +80,16 @@ WAKE_REASON core_sleep(int wakeReasons) {
 	// Figure out lowest power mode we can enter.
 	int sleepMode;
 	if (wakeReasons == NONE) {
-		sleepMode = LPM4_bits;      //TODO Shouldn't be sleeping in this mode , enters it never cannot be woken by stopwatch as ACLK stopped
+		sleepMode = LPM4_bits;      //TODO Shouldn't be sleeping in this mode , enters it never cannot be woken by stopwatch as ACLK stopped & condition can never be satisfied
 	} else {
 		sleepMode = LPM3_bits;
 	}
 
 	//P3OUT &= ~BIT0;
 	// Disable interrupts to avoid race condition where we miss the interrupt.
-    __disable_interrupt();      // Equivalent to setting GIE to 0
+	// Equivalent to setting GIE to 0
+	checkTOBCOff();
+    __disable_interrupt();
 	if (_wakeEventsOccurred == 0) {
 		// Stop the dog
 		watchdog_stop();

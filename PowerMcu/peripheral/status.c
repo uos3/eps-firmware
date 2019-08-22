@@ -16,14 +16,14 @@ void status_set_bits(uint8_t mask)
 {
 	status |= mask;
 	intpin_set(0);
-	interrupt_set_status(status);
+	//interrupt_set_status(status);
 }
 
 void status_clear_bits(uint8_t mask)
 {
 	status &= ~mask;
 	intpin_set(0);
-	interrupt_set_status(status);
+	//interrupt_set_status(status);
 
 }
 

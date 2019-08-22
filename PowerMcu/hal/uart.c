@@ -49,7 +49,8 @@ void uart_init()
 
 void uart_tx(uint8_t *buffer, uint8_t count)
 {
-    packetsToSend = 6;          //Count is hardcoded to 0 in TOBC this and the ISR would need to be changed if this was to change
+    //Count is hardcoded to 0 in TOBC this and the ISR would need to be changed if this was to change, ignore the power advice this is used in comm.c ISR
+    packetsToSend = 6;
     txBufferAddress = buffer;
     IE2 |= UCA0TXIE;
 

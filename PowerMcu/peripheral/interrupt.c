@@ -13,6 +13,8 @@ uint8_t status;
 
 static void refresh_pin();
 
+//Was used in status, no longer used so interrupt being used in RailOffCheck for watchdog purpose
+
 void interrupt_set_status(uint8_t value)
 {
 	status = value;

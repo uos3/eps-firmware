@@ -169,7 +169,7 @@ all: PowerMcu\ Working4.out
 PowerMcu\ Working4.out: $(OBJS) $(CMD_SRCS) $(GEN_CMDS)
 	@echo 'Building target: "$@"'
 	@echo 'Invoking: MSP430 Linker'
-	"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/bin/cl430" -vmsp --abi=eabi -Ooff --opt_for_speed=1 --use_hw_mpy=none --advice:power="all" -g --define=__MSP430F2132__ --display_error_number --diag_warning=225 --diag_wrap=off --printf_support=minimal -z -m"PowerMcu Working4.map" --stack_size=80 --heap_size=80 -i"C:/ti/ccs910/ccs/ccs_base/msp430/include" -i"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/lib" -i"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include" --reread_libs --warn_sections --diag_wrap=off --display_error_number --xml_link_info="PowerMcu Working4_linkInfo.xml" --use_hw_mpy=none --rom_model -o "PowerMcu Working4.out" $(ORDERED_OBJS)
+	"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/bin/cl430" -vmsp -Ooff --opt_for_speed=1 --use_hw_mpy=none --advice:power="all" --define=__MSP430F2132__ -g --printf_support=minimal --diag_warning=225 --diag_wrap=off --display_error_number --abi=eabi --silicon_errata=CPU19 -z -m"PowerMcu Working4.map" --heap_size=80 --stack_size=80 -i"C:/ti/ccs910/ccs/ccs_base/msp430/include" -i"C:/ti/ccs910/ccs/ccs_base/msp430/include" -i"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/lib" -i"C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include" --reread_libs --diag_wrap=off --display_error_number --warn_sections --xml_link_info="PowerMcu Working4_linkInfo.xml" --use_hw_mpy=none --rom_model -o "PowerMcu Working4.out" $(ORDERED_OBJS)
 	@echo 'Finished building target: "$@"'
 	@echo ' '
 

@@ -16,6 +16,11 @@
 
 uint8_t* i2c_buff;
 
+void reset_EPS()    {
+    while (1)   {
+        continue;           //Watchdog will not receive next kick
+    }
+}
 
 void register_init()
 {
@@ -30,10 +35,10 @@ uint16_t register_get(uint8_t id)
 {
 	switch(id)
 	{
-	case CONFIG:/*0*/return interrupt_get_mask();
-	case STATUS:/*1*/return status_get();
+	case CONFIG:/*0*/return interrupt_get_mask();           //obselete
+	case STATUS:/*1*/return status_get();                   //obselete
 	case SW_ON: /*2*/return ocp_get_rails_activated();
-	case POWER: /*3*/return ocp_get_rails_activated();              //Unnecessary
+	case RESET: /*3*/return 0;              //TODO add read number of resets and reset EPS board if time
 
 	case BAT_V: /*4*/return sense_get(VBATT_VSENSE);
     case BAT_I:      return get_battery_telemetry(BAT_I2C_IBAT, i2c_buff);
@@ -88,7 +93,7 @@ uint16_t register_get(uint8_t id)
 	case SUPPLY_5_I: return sense_get(SYS_5V_CSENSE_MUX);
 
 	case CHARGE_I:   return sense_get(CHARGE_CSENSE_MUX);
-	case MPPT_BUS_V: return sense_get(MPPT_BUS_VSENSE);
+	case MPPT_BUS_V: return sense_get(MPPT_BUS_VSENSE); //Battery charging voltage
 
 	case CRC_ER_CNT: return errormon_get(CrcInvalid);
 	case DROP_CNT:   return errormon_get(PacketTimeout);
@@ -112,9 +117,14 @@ void register_set(uint8_t id, uint16_t value)
     case SW_OFF:  ocp_deactivate_all_rails(); break;
 	case CRC_ER_CNT: errormon_set(CrcInvalid, value); break;
 	case DROP_CNT: errormon_set(PacketTimeout, value); break;
+	case RESET: reset_EPS(); break;
+	case BAT_V: reset_battery(); break;           //Resets Battery
 	}
 	return;
 }
+
+
+
 
 // Due to using integers, all division is left to the end
 uint16_t convert_adc_to_current(uint16_t csense, uint16_t shunt_resistance){

@@ -45,11 +45,12 @@ int main(void)
     //uint16_t data = register_get(BAT_T);
     //data++;
 
-    deploy_wait_to_activate(2);
+    //TOBCWatchdogService();            //TODO, uncomment when interrupt line with TOBC set up, currently requires EPS routing changes and addition to TOBC code 12/08/2019
+    //deploy_wait_to_activate(2);
 
     for (;;)    {
 
-        checkTOBCOff();
+        //checkTOBCOff(); //TODO does this need to be added to core.c before it enters sleep
     	switch (core_sleep(UART | STOPWATCH | STOPWATCHB)) //| I2C_DEBUG))
     	{
     	case UART:

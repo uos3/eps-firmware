@@ -16,6 +16,7 @@ hal/switches.obj: C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/incl
 hal/switches.obj: C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/intrinsics_legacy_undefs.h
 hal/switches.obj: C:/Users/HP//\ User/workspace_v9/PowerMcu//\ Working4/core.h
 hal/switches.obj: C:/ti/ccs910/ccs/ccs_base/msp430/include/msp430.h
+hal/switches.obj: C:/Users/HP//\ User/workspace_v9/PowerMcu//\ Working4/peripheral/RailOffCheck.h
 
 ../hal/switches.c: 
 C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/stdint.h: 
@@ -33,3 +34,4 @@ C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/intrinsics.h:
 C:/ti/ccs910/ccs/tools/compiler/ti-cgt-msp430_18.12.2.LTS/include/intrinsics_legacy_undefs.h: 
 C:/Users/HP//\ User/workspace_v9/PowerMcu//\ Working4/core.h: 
 C:/ti/ccs910/ccs/ccs_base/msp430/include/msp430.h: 
+C:/Users/HP//\ User/workspace_v9/PowerMcu//\ Working4/peripheral/RailOffCheck.h: 

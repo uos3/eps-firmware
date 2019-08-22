@@ -16,7 +16,7 @@ void hal_init()
 {
 	adc_init();
 	switches_init();
-	intpin_init();
+	//intpin_init();
 	mux_init();
 	stopwatch_init();
 	stopwatch_initB();

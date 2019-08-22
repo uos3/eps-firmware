@@ -10,6 +10,7 @@
 #include "switches.h"
 #include "msp430f2132.h"
 #include "core.h"
+#include "peripheral/RailOffCheck.h"
 
 #define PSIN  P1IN
 #define PSOUT P1OUT
@@ -29,9 +30,11 @@ static volatile uint8_t switchFlags;
 
 void switches_init()        //What PSIN hold when direction is set to out
 {
-    PSDIR = 0xC0;      //Setting top two bits to output as they are unused and this prevents a floating input, reducing power consumption was oxc0 switched off state
+    //Setting top bit to output as it is unused and this prevents a floating input, reducing power consumption was  switched off state
+    //Switches rails off, 2nd top bit is interrupt
+    PSDIR = 0xBF;
     PSOUT = 0;
-    PSIE = PSMASK;     //Whether flags are switched on for a pin
+    PSIE = PSMASK | BIT6;     //Whether flags are switched on for a pin
     PSIES = 0xFF;      //Setting flags to falling
 	switchFlags = 0;
 }
@@ -64,8 +67,13 @@ __interrupt void PORT1_ISR(void)
 	switchFlags |= PSIFG;
 	// Clear flag
 	PSIFG &= ~switchFlags;
+	PSIES ^= switchFlags & 0x40;	//Changes whether flag is on when a rise or fall is detected rising or falling, enabling the interrupt to catch both rising and falling changes
 
-	core_check_wakeup(SWITCH);
+	if (switchFlags & BIT6) {
+	    TOBCWatchdogService();
+	} else {
+	    core_check_wakeup(SWITCH);
+	}
 }
 
 // Remapping the pins is required because the OCP

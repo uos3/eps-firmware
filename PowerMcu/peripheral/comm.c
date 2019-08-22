@@ -162,7 +162,7 @@ __interrupt void USCIAB0RX_ISR(void)
                 *masterRxData = UCB0RXBUF;
 
                 // when all bytes we want are received
-                // TODO: make separate process for the below
+                // TOD: make separate process for the below
     //          i2c_disableRXInterrupt();
     //          TA0CCTL0 |= CCIE;
                 // Back to Low Power Mode
@@ -181,7 +181,7 @@ __interrupt void USCIAB0RX_ISR(void)
                         // store the address value separated from the buffer
                         //beaconPacketAddress = *slaveRXData;
                         // change the data pointer position
-                        // TODO: check whether below is correct
+                        // TOD: check whether below is correct
                         slaveData = slaveData + beaconPacketAddress*8;
                         slaveIndex = 8;
                     } else {
@@ -189,9 +189,9 @@ __interrupt void USCIAB0RX_ISR(void)
                         beaconPacketAddress = 0x0;
                         // NOT the internal address we want
                         // release the bus (send NACK)
-                        // TODO:how do we know when NACK is out??
+                        // TOD:how do we know when NACK is out??
                         UCB0CTL1 |= UCTXNACK;
-                        // TODO: initialize variables
+                        // TOD: initialize variables
                     }
                 } else {
                     *slaveData = UCB0RXBUF;
@@ -246,7 +246,7 @@ __interrupt void USCIAB0TX_ISR(void)        //Reliant on the assumption that all
                 masterRxIndex--;
                 if (masterRxIndex){
                     *masterRxData = UCB0RXBUF;
-                    masterRxData++; //Accessing the next byte TODO will this reset properly
+                    masterRxData++; //Accessing the next byte
 
                 } else {
                     *masterRxData = UCB0RXBUF;

@@ -36,7 +36,7 @@ uint16_t get_battery_telemetry(uint16_t reg, uint8_t* i2c_buff){
     uint8_t data_to_send[BATTERY_WRITE_CMD_SIZE];
 
     // [command] part (pg 49 of battery report C)
-    data_to_send[0] = 0x10;
+    data_to_send[0] = GETTELEM;
 
     // 16-bit [data parameter] part (pg 55 of battery report C)
     data_to_send[1] = (uint8_t)(0x00FF & reg);
@@ -69,4 +69,22 @@ uint16_t get_battery_telemetry(uint16_t reg, uint8_t* i2c_buff){
     uint16_t response = ( ((uint16_t)data_received[0]) << 8 ) | (uint16_t)data_received[1];
 
     return apply_equation_to_adc(response, reg);
+}
+
+void reset_battery()    {
+    uint8_t data_to_send[2];
+
+    // [command] part (pg 49 of battery report C)
+    data_to_send[0] = MANUALRESET;
+    // 8-bit [data parameter] part (pg 55 of battery report C)
+    data_to_send[1] = 0;
+
+    i2c_masterWrite(BAT_ADDRESS, 2, data_to_send);
+
+    // wait until command is sent
+    uint8_t i;
+    while (!i2c_getTxDoneFlag()){
+      for (i=0; i<100; i++); //delay
+    }
+    i2c_clearTxDoneFlag();
 }
