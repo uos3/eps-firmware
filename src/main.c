@@ -6,7 +6,6 @@
  */
 int main(void)
 {
-<<<<<<< HEAD
 	WDTCTL = WDTPW | WDTHOLD;	/* stop watchdog timer */
 
 	/*initialise hardware/functions */
@@ -30,9 +29,6 @@ int main(void)
 	        break;
 	    }
 	}
-=======
-	WDTCTL = WDTPW | WDTHOLD;	// stop watchdog timer
->>>>>>> refs/remotes/origin/GDP202021
 	
 	return 0;
 }
