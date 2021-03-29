@@ -1,0 +1,15 @@
+/*
+ * SerialComms_public.h
+ *
+ *  Created on: 29 Mar 2021
+ *      Author: Roberto
+ */
+
+#ifndef APPLICATIONS_SERIAL_COMMS_SERIALCOMMS_PUBLIC_H_
+#define APPLICATIONS_SERIAL_COMMS_SERIALCOMMS_PUBLIC_H_
+
+
+
+
+
+#endif /* APPLICATIONS_SERIAL_COMMS_SERIALCOMMS_PUBLIC_H_ */
