@@ -1,34 +1,73 @@
-#include <msp430.h> 
-
-
-/**
- * main.c
+/*
+ *
+ * @file main.c
+ * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
+ * @brief Main file for EPS firmware.
+ *
+ * @version 0.1
+ * @date 2021-03-29
+ *
+ * @copyright UOS3
  */
+
+
+#include "main.h"
+
+
 int main(void)
 {
-	WDTCTL = WDTPW | WDTHOLD;	/* stop watchdog timer */
+    /* ---- INITIALISATION ---- */
 
-	/*initialise hardware/functions */
+    /* Do msp430 initialisation */
+	init_msp430();
 
-	/* need to contain main loop which will run the msp430 in sleep mode and
-	 * then exit in case of any of the interrupts and carry out the required process*/
-	while(true){
-	    switch(SLEEP MODE){
-	    case UART Comms:
-	        TOBC Comms Process;
-	        break;
-	    case Timer:
-	        Timer:
-	        Timer Interrupt Process;
-	        break;
-	    case OCP Event:
-	        OCP Notification Process;
-	        break;
-	    case TOBC Interrupt:
-	        TOBC Interrupt Process;
-	        break;
-	    }
-	}
-	
-	return 0;
+    /* Do drivers init */
+    init_drivers();
+
+    /* Do component init */
+    init_components();
+
+    /* Do application init */
+    init_applications();
+
+    /* Check for startup reason */
+    init_startup();
+
+
+    /* ---- MAIN LOOP ---- */
+    while (1) {
+
+        /* For each flag check whether it is active and should be dealt with */
+
+        /* Check for UART interrupt */
+        if(interrupt_flags & BIT0 != 0){
+            Serial_event();
+        }
+
+        /* Check for watchdog timer interrupt */
+        if(interrupt_flags & BIT1 != 0){
+            TobcWatchdog_event();
+        }
+
+        /* Check for OCP interrupt */
+        if(interrupt_flags & BIT2 != 0){
+            Ocp_event();
+        }
+
+        /* Check for OBC pin interrupt */
+        if(interrupt_flags & BIT3 != 0){
+            TobcPin_event();
+        }
+
+        /* If everything is dealt with and the log has not been modified, go to sleep (in LPM3) with interrupts enabled */
+        if(interrupt_flags == 0){
+            if(modified_log)
+            {
+                LogFile_commit();
+            }
+
+            __bis_SR_register(LPM3_bits | GIE);
+        }
+    }
+    return 0;
 }

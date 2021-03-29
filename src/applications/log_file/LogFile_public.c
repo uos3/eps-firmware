@@ -5,6 +5,10 @@
  *      Author: Roberto
  */
 
+#include "LogFile_public.h"
 
+int LogFile_commit(){
+    return 0;
+}
 
 

@@ -52,13 +52,13 @@
  * ------------------------------------------------------------------------- */
 
 /* Standard library includes */
-#include <stdio.h>
+//#include <stdio.h>
 
 /* TivaWare includes */
-#include "inc/tm4c123gh6pm.h"
+//#include "inc/tm4c123gh6pm.h"
 
 /* Internal includes */
-#include "driver/spi/spi_public.h"
+//#include "driver/spi/spi_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
