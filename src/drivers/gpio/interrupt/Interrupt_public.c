@@ -1,59 +1,61 @@
 /*
- * @ingroup uart
+ * @ingroup gpio
  *
- * @file Uart_public.h
+ * @file Interrupt_public.c
  * @author Daniel Murphy (dm4g16@soton.ac.uk)
- * @brief Public header for UART driver.
+ * @brief Public source file for interrupt driver.
  *
  * @version 0.1
- * @date 2021-03-15
+ * @date 2021-03-30
  *
  * @copyright UOS3
  */
-
-#ifndef DRIVERS_UART_UART_PUBLIC_H_
-#define DRIVERS_UART_UART_PUBLIC_H_
 
 /* -------------------------------------------------------------------------
  * INCLUDES
  * ------------------------------------------------------------------------- */
 
-/* Standard Library */
-#include <stdlib.h>
+/* Standard library includes */
+#include <stdio.h>
 #include <stdint.h>
-#include <stdbool.h>
-#include <string.h>
-
-/* Internal */
-#include "util/circular_buffers/Circular_buffer_public.h"
 #include <msp430.h>
-#include "drivers/uart/Uart_errors.h"
+
+/*Internal includes */
+#include "drivers/gpio/interrupt/Interrupt_public.h"
+/* -------------------------------------------------------------------------
+ * DEFINES
+ * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
- * DEFINES
+ * ENUMS
  * ------------------------------------------------------------------------- */
-static circ rxbuffer;
-#define MAX_TRYS (30)
+
 /* -------------------------------------------------------------------------
  * STRUCTS
  * ------------------------------------------------------------------------- */
+
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-/* @brief Initialises the UART
- * Follows init procedure recommended pg413 http://www.ti.com/lit/ug/slau144j/slau144j.pdf
- * @return ErrorCode: if no error ERROR_NONE or UART_ERROR_x
- */
-void Uart_init(void);
-ErrorCode Uart_send_bytes(uint8_t *p_buffer, uint8_t offset, uint8_t length);
-ErrorCode Uart_recv_bytes(uint8_t * p_buffer, uint8_t offset, uint8_t count);
+void Intpin_init(void){
+    /*Sets pin 1.6 as an output*/
+    P1DIR |= BIT6;
+    /*Sets it to output 1*/
+    P1OUT |= BIT6;
+}
 
-
-
-
-#endif /* DRIVERS_UART_UART_PUBLIC_H_ */
+void Intpin_set(uint8_t interruptActive){
+    if(interruptActive){
+        /*Sets output to 0 triggering TOBC*/
+        P1OUT &= ~BIT6;
+    }
+    else{
+        /*Sets output to 1*/
+        P1OUT |= BIT6;
+    }
+}
