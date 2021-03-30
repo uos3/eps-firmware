@@ -1,38 +1,29 @@
 /*
- * @ingroup gpio
+ * Tobc_public.h
  *
- * @file Adc_public.h
- * @author Daniel Murphy (dm4g16@soton.ac.uk)
- * @brief Public header for ADC driver.
- *
- * @version 0.1
- * @date 2021-03-30
- *
- * @copyright UOS3
+ *  Created on: 29 Mar 2021
+ *      Author: Roberto
  */
 
-#ifndef DRIVERS_GPIO_ADC_ADC_PUBLIC_H_
-#define DRIVERS_GPIO_ADC_ADC_PUBLIC_H_
+#ifndef EVENT_HANDLERS_TOBC_PIN_TOBCPIN_PUBLIC_H_
+#define EVENT_HANDLERS_TOBC_PIN_TOBCPIN_PUBLIC_H_
 
 /* -------------------------------------------------------------------------
  * INCLUDES
  * ------------------------------------------------------------------------- */
 
-/* Standard library includes */
-#include <stdio.h>
-#include <stdint.h>
-#include <msp430.h>
+/* Standard Library */
 
 
-/* -------------------------------------------------------------------------
- * DEFINES
- * ------------------------------------------------------------------------- */
+/* Internal */
+
+
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
- * ENUMS
+ * DEFINES
  * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
@@ -42,11 +33,9 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-void Adc_init(uint8_t MUX);
-void Adc_start_conversion(uint16_t ch);
-uint16_t Adc_convert(uint16_t ch);
+
+int TobcPin_event();
 
 
 
-
-#endif /* DRIVERS_GPIO_ADC_ADC_PUBLIC_H_ */
+#endif /* EVENT_HANDLERS_TOBC_PIN_TOBCPIN_PUBLIC_H_ */

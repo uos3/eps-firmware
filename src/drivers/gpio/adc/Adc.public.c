@@ -23,7 +23,6 @@
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
-static uint16_t result;
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
@@ -61,12 +60,13 @@ void Adc_start_conversion(uint16_t ch){
 }
 
 uint16_t Adc_convert(uint16_t ch){
+    uint16_t result;
     Adc_start_conversion(ch);
     /*Stores the converted value */
     result = ADC10MEM;
-    return result;
     /*Disable ADC */
     ADC10CTL0 &= ~ENC;
+    return result;
 }
 
 

@@ -1,39 +1,34 @@
 /*
- * @ingroup gpio
  *
- * @file Adc_public.h
- * @author Daniel Murphy (dm4g16@soton.ac.uk)
- * @brief Public header for ADC driver.
+ * @file init.h
+ * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
+ * @brief Header file for initialisation functions.
  *
  * @version 0.1
- * @date 2021-03-30
+ * @date 2021-03-29
  *
  * @copyright UOS3
  */
 
-#ifndef DRIVERS_GPIO_ADC_ADC_PUBLIC_H_
-#define DRIVERS_GPIO_ADC_ADC_PUBLIC_H_
+#ifndef INIT_H_
+#define INIT_H_
 
 /* -------------------------------------------------------------------------
  * INCLUDES
  * ------------------------------------------------------------------------- */
-
 /* Standard library includes */
-#include <stdio.h>
-#include <stdint.h>
 #include <msp430.h>
 
-
-/* -------------------------------------------------------------------------
- * DEFINES
- * ------------------------------------------------------------------------- */
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
- * ENUMS
+ * DEFINES
  * ------------------------------------------------------------------------- */
+
+#define RX_PIN BIT5
+#define TX_PIN BIT4
 
 /* -------------------------------------------------------------------------
  * STRUCTS
@@ -42,11 +37,10 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-void Adc_init(uint8_t MUX);
-void Adc_start_conversion(uint16_t ch);
-uint16_t Adc_convert(uint16_t ch);
+int init_msp430();
+int init_drivers();
+int init_components();
+int init_applications();
+int init_startup();
 
-
-
-
-#endif /* DRIVERS_GPIO_ADC_ADC_PUBLIC_H_ */
+#endif /* INIT_H_ */
