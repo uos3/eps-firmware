@@ -8,7 +8,7 @@
 /Software/EPS on the SharePoint holds the Software Architecture, Flowchart, and System Status.
 
 Current versions:
-- EPS_SoftwareArchitecture_v0.4
+- EPS_SoftwareArchitecture_v0.5
 - EPS_SoftwareFlowchart_v0.2
 
 
