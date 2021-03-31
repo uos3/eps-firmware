@@ -5,6 +5,9 @@
  *      Author: Roberto
  */
 
+int SerialComms_process(){
 
+    return 1;
+}
 
 

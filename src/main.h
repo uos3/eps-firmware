@@ -26,19 +26,19 @@
 
 /* Event Handlers */
 #include "event_handlers/ocp/Ocp_public.h"
-#include "event_handlers/serial/Serial_public.h"
 #include "event_handlers/tobc_pin/TobcPin_public.h"
 #include "event_handlers/tobc_watchdog/TobcWatchdog_public.h"
+#include "event_handlers/serial_event/SerialEvent_public.h"
 
 /* Applications */
 #include "applications/log_file/LogFile_public.h"
+#include "applications/rail_editor/RailEditor_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint16_t interrupt_flags = 0;
-uint8_t modified_log = 0;
+uint16_t INTERRUPT_FLAGS = 0;
 
 /* -------------------------------------------------------------------------
  * DEFINES
@@ -48,15 +48,6 @@ uint8_t modified_log = 0;
 #define WATCHDOG_FLAG BIT1
 #define TOBC_PIN_FLAG BIT2
 #define OCP_FLAG BIT3
-
-/* Pin number on the P1 bank */
-#define OCP1_PIN BIT2
-#define OCP2_PIN BIT1
-#define OCP3_PIN BIT0
-#define OCP4_PIN BIT5
-#define OCP5_PIN BIT4
-#define OCP6_PIN BIT3
-#define TOBC_PIN BIT3
 
 /* Pin number on the P1 bank */
 #define OCP1_FLAG BIT4

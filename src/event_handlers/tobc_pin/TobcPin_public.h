@@ -13,9 +13,10 @@
  * ------------------------------------------------------------------------- */
 
 /* Standard Library */
-
+#include <stdint.h>
 
 /* Internal */
+#include "applications/interrupt_manager/InterruptManager_public.h"
 
 
 /* -------------------------------------------------------------------------
