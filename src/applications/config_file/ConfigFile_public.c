@@ -11,7 +11,7 @@ uint8_t ConfigFile_read(uint8_t address){
     return data;
 }
 
-int ConfigFile_write(uint8_t address, uint8_t data){
+int ConfigFile_write(uint8_t* data){
     return 1;
 }
 

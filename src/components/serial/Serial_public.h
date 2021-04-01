@@ -39,7 +39,7 @@ uint8_t SERIAL_PACKET[SERIAL_PACKET_MAX_LENGTH];
 
 int Serial_TX(uint8_t* p_packet_in, uint8_t packet_length_in);
 
-uint8_t Serial_RX(uint8_t* p_packet_out);
+uint8_t* Serial_RX(uint8_t *p_length_out, uint8_t* p_valid_packet_out);
 
 
 #endif /* COMPONENTS_SERIAL_SERIAL_PUBLIC_H_ */

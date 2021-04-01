@@ -26,6 +26,8 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
+#define CONFIG_FILE_LENGTH (32)
+
 /* Address for each config variable */
 #define CONFIG_FILE_OCP (0x00)
 
@@ -39,7 +41,7 @@
  * ------------------------------------------------------------------------- */
 uint8_t ConfigFile_read(uint8_t address);
 
-int ConfigFile_write(uint8_t address, uint8_t data);
+int ConfigFile_write(uint8_t* data);
 
 
 #endif /* APPLICATIONS_CONFIG_FILE_CONFIGFILE_PUBLIC_H_ */
