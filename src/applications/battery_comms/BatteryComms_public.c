@@ -13,7 +13,7 @@
 #include "BatteryComms_public.h"
 
 /* Transmit given command to the battery and then get the response */
-uint16_t BatteryComms_comm(uint16_t command) {
+uint16_t BatteryComms_TX_RX(uint16_t command) {
     Battery_TX(command);
     return Battery_RX();
 }

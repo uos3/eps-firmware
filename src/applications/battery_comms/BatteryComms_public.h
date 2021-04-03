@@ -21,6 +21,7 @@
 #include <stdint.h>
 
 /* Internal */
+#include "components/battery/Battery_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
@@ -30,8 +31,6 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-#define HOUSE_KEEPING_DATA_LENGTH (20)
-
 /* -------------------------------------------------------------------------
  * STRUCTS
  * ------------------------------------------------------------------------- */
@@ -40,6 +39,6 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-uint16_t BatteryComms_comm(uint16_t command);
+uint16_t BatteryComms_TX_RX(uint16_t command);
 
 #endif /* APPLICATIONS_BATTERY_COMMS_BATTERYCOMMS_PUBLIC_H_ */

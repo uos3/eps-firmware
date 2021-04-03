@@ -5,6 +5,8 @@
  *      Author: Roberto
  */
 
+#include "Rails_public.h"
 
-
-
+uint8_t Rails_get_data(uint8_t* p_pointer_out){
+    return 0;
+}

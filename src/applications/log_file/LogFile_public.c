@@ -12,7 +12,7 @@ int LogFile_write(uint8_t address_in) {
     return 0;
 }
 
-int LogFile_read() {
+int LogFile_read(uint8_t* p_packet_in) {
     return 0;
 }
 
@@ -26,7 +26,7 @@ int LogFile_clear() {
 
 int LogFile_check_changes() {
     uint8_t i;
-    for (i = LOG_FILE_LENGTH - 1 ; i == 0; i--) {
+    for (i = 0 ; i < LOG_FILE_LENGTH; i++) {
         if (LOG_FILE_CACHE[i] != 0) {
             return 1;
         }

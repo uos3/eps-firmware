@@ -102,7 +102,7 @@ int SerialComms_process() {
                 (uint16_t) p_packet_rx[SERIAL_COMMS_HEADER_LENGTH + 1];
 
         /* Send command to battery and get response */
-        uint16_t battery_response = BatteryComms_comm(battery_command);
+        uint16_t battery_response = BatteryComms_TX_RX(battery_command);
 
         /* Add battery response to TX packet */
         SERIAL_COMMS_PACKET[SERIAL_COMMS_HEADER_LENGTH] =

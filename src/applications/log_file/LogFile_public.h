@@ -44,7 +44,7 @@ uint8_t LOG_FILE_CACHE [LOG_FILE_LENGTH];
  * ------------------------------------------------------------------------- */
 
 int LogFile_write(uint8_t address_in);
-int LogFile_read();
+int LogFile_read(uint8_t* p_packet_in);
 int LogFile_commit();
 int LogFile_clear();
 int LogFile_check_changes();
