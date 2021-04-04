@@ -1,8 +1,13 @@
 /*
- * RailControl_public.h
  *
- *  Created on: 15 Mar 2021
- *      Author: Roberto
+ * @file RailEditor_public.h
+ * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
+ * @brief Decide which rails should be turned on and off.
+ *
+ * @version 0.1
+ * @date 2021-04-04
+ *
+ * @copyright UOS3
  */
 
 #ifndef APPLICATIONS_RAIL_EDITOR_RAILEDITOR_PUBLIC_H_
@@ -17,7 +22,7 @@
 #include <msp430.h>
 
 /* Internal */
-
+#include "components/rails/Rails_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS
@@ -45,6 +50,6 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-int RailEditor_set_rails(uint8_t rail_mask_in, uint8_t new_rail_status_in);
+void RailEditor_set_rails(uint8_t rail_mask_in, uint8_t new_rail_status_in);
 
 #endif /* APPLICATIONS_RAIL_EDITOR_RAILEDITOR_PUBLIC_H_ */
