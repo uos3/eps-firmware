@@ -43,6 +43,10 @@ int main(void) {
 
     /* ---- MAIN LOOP ---- */
     while (1) {
+
+        /* Reset/kick timers */
+        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
+
         /* For each flag check whether it is active and should be dealt with */
 
         /* Check for UART interrupt */
@@ -70,6 +74,9 @@ int main(void) {
             TobcPin_event();
         }
 
+        /* Reset/kick timers */
+        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
+
         /* If everything is dealt with and the log has not been modified, go to sleep (in LPM3) with interrupts enabled */
         if (INTERRUPT_FLAGS & 0x0F == 0) {
             if (LogFile_check_changes()) {
@@ -85,11 +92,17 @@ int main(void) {
  * Interrupts
  * ------------------------------------------------------------------------- */
 
-/* Watchdog Timer interrupt service routine */
-#pragma vector = WDT_VECTOR
-__interrupt void WDT_ISR(void) {
-    INTERRUPT_FLAGS |= WATCHDOG_FLAG;  // Set custom interrupt flag
+/* Interrupt service routine to periodically wake up the EPS */
+#pragma vector = TIMER0_A0_VECTOR
+__interrupt void Timer_A_CCR0_ISR(void) {
     __bic_SR_register_on_exit(LPM3_bits); // Wake up (Need to test whether this is needed or if the registered get cleared anyway)
+}
+
+/* Interrupt service routine to reset the TOBC */
+#pragma vector = TIMER1_A0_VECTOR
+__interrupt void Timer_A_CCR1_ISR(void) {
+    INTERRUPT_FLAGS |= WATCHDOG_FLAG;  // Set custom interrupt flag
+    __bic_SR_register_on_exit(LPM3_bits); // Wake up
 }
 
 /* UART RX interrupt service routine */

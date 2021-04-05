@@ -19,6 +19,9 @@
 /* Standard library includes */
 #include <msp430.h>
 
+/* internal */
+#include "applications/interrupt_manager/InterruptManager_public.h"
+
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
