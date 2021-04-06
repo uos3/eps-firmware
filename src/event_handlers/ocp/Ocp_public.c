@@ -17,7 +17,8 @@
 int Ocp_event(uint8_t rail_mask) {
     uint8_t i;
     /* Read config to determine what should be done with each rail if the OCP */
-    uint8_t new_rail_status = ConfigFile_read(CONFIG_FILE_OCP);
+    uint8_t new_rail_status;
+    ConfigFile_read(CONFIG_FILE_OCP, &new_rail_status);
 
     /* Set the rails that have OCPed to whatever they should be */
     RailEditor_set_rails(rail_mask, new_rail_status);
