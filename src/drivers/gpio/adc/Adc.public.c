@@ -20,25 +20,11 @@
 #include <msp430.h>
 
 
-/* -------------------------------------------------------------------------
- * DEFINES
- * ------------------------------------------------------------------------- */
-/* -------------------------------------------------------------------------
- * GLOBALS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * ENUMS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * STRUCTS
- * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-void Adc_init(uint8_t MUX){
+void Adc_init(void){
     /* Sets the ADC pins, A7 for MUX1 and A6 for MUX2
      * */
     ADC10AE0 = BIT7 + BIT6;
@@ -50,18 +36,18 @@ void Adc_init(uint8_t MUX){
     ADC10CTL0 |= SREF_0 + ADC10SHT_3 + ADC10SR + REFON + REFBURST + REF2_5V + ADC10ON + ADC10IE;
 }
 
-void Adc_start_conversion(uint16_t ch){
+void Adc_start_conversion(uint16_t channel_in){
     /*Sets time source as ADC10OSC and selects the channel, INCH_6 for MUX 1 and INCH_7 for MUX 2*/
-    ADC10CTL1 = ADC10SSEL_0 + ch;
+    ADC10CTL1 = ADC10SSEL_0 + channel_in;
     /*Delays to allow Vref to settle*/
     __delay_cycles(128);
     /* Enables ADC and starts conversion */
     ADC10CTL0 |= ENC + ADC10SC;
 }
 
-uint16_t Adc_convert(uint16_t ch){
+uint16_t Adc_convert(uint16_t channel_in){
     uint16_t result;
-    Adc_start_conversion(ch);
+    Adc_start_conversion(channel_in);
     /*Stores the converted value */
     result = ADC10MEM;
     /*Disable ADC */

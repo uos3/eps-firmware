@@ -25,29 +25,18 @@
 
 /* Internal */
 #include "drivers/uart/Uart_public.h"
-#include "drivers/uart/Uart_errors.h"
-#include "util/circular_buffers/Circular_buffer_public.h"
 #include <msp430.h>
 
-/* -------------------------------------------------------------------------
- * GLOBALS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * DEFINES
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * STRUCTS
- * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-
+/* @brief Initialises the UART
+ * Follows init procedure recommended pg413 http://www.ti.com/lit/ug/slau144j/slau144j.pdf
+ * @return 0 if successful, non-zero if not
+ */
 void Uart_init(void){
-    /*Initialises the circular buffer used for RX*/
-    Circular_buffer_init(&rxbuffer);
+
     /* Initialises the UART through the USCI*/
     /* Sets UCSWRST to 1*/
     UCA0CTL1 = UCSWRST;
@@ -56,7 +45,6 @@ void Uart_init(void){
     UCA0CTL1 |= UCSSEL_2;
     /*Sets baud rate to 56000, 8MHz clock speed
      * calculated values using http://mspgcc.sourceforge.net/baudrate.html */
-    /*TODO set clock speed as a global function in what document?*/
     UCA0BR0 = 0x8E;
     UCA0BR1 = 0x00;
     UCA0MCTL = 0xF7;
@@ -73,51 +61,58 @@ void Uart_init(void){
 
     /* Enable Interrupts */
     IE2 |= UCA0RXIE; /* RX Interrupt */
-    IE2 |= UCA0TXIE; /* TX Interrupt */
 
 }
 
-ErrorCode Uart_send_bytes(uint8_t *p_buffer, uint8_t offset, uint8_t count){
-    /*Writes to the TX buffer to be sent over the UART interface */
+uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in){
+    /*Writes content of p_buffer to TX buffer to be sent over the UART */
     uint8_t i, j;
-    for (i = 0; i < count; i ++){
-        /*while(!(IFG2&UCA0TXIFG)){
-        UCA0TXBUF = p_buffer[offset + i];*/
-        for(j = 0; j < MAX_TRYS;){
-            if(!(IFG2&UCA0TXIFG)){
-                UCA0TXBUF = p_buffer[offset + i];
-            }else{
+    for (i = 0; i < length_in; i ++) {
+        for(j = 0; j < MAX_TRYS + 1;) {
+            /* checks UCA0TXBUF empty */
+            if(IFG2 & UCA0TXIFG) {
+                UCA0TXBUF = p_buffer_in[i];
+            }
+            else {
                 j ++;
-        }
-        }
-    }
-        if(j == MAX_TRYS){
-            return UART_TX_ERROR_MAX_TRYS_REACHED;
-        }else{
-            return ERROR_NONE;
-        }
-    }
-
-
-ErrorCode Uart_recv_bytes(uint8_t * p_buffer, uint8_t offset, uint8_t count){
-    /* This function pushes the data from the RX buffer to a circular buffer, checks to see if the
-     * buffer is correctly filled and then copies it to the buffer parameter on the input.*/
-    uint8_t i;
-    if (Circular_buffer_push(&rxbuffer, UCA0RXBUF) == 0){
-        return UART_RX_ERROR_QUEUE_FULL;
-    }else{
-        for (i = 0; i < count; i ++){
-                uint8_t val = Circular_buffer_pop(&rxbuffer);
-                if(val == 0xFF){
-                    return UART_RX_ERROR_QUEUE_EMPTY;
-                }else{
-                    p_buffer[offset + i] = val;
             }
         }
-            return ERROR_NONE;
-}
+        if(j == MAX_TRYS) {
+            return UART_TX_BUFFER_FULL_MAX_ATTEMPTS_REACHED;
+        }
+    }
+    return 0;
 }
 
+
+uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in){
+    /* Checks the interrupt flag to see if a character has been received,
+     * then reads and stores in p_buffer_out*/
+    uint8_t i, j;
+    for (i = 0; i < length_in; i ++) {
+        for(j = 0; j < MAX_TRYS + 1;) {
+            if(IFG2 & UCA0RXIFG) {
+                        p_buffer_out[i] = UCA0RXBUF;
+                        IFG2 &= ~UCA0RXIFG; /*Clears RX flag */
+                    }
+            else {
+                j ++;
+                }
+            }
+        if(j == MAX_TRYS) {
+            return UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED;
+        }
+
+    }
+    return 0;
+}
+
+
+/*#pragma vector=USCIAB0RX_VECTOR
+__interrupt void USCIORX_ISR(void) {
+
+}
+*/
 
 
 

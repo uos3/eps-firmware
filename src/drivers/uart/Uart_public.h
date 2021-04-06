@@ -25,33 +25,31 @@
 #include <string.h>
 
 /* Internal */
-#include "util/circular_buffers/Circular_buffer_public.h"
 #include <msp430.h>
-#include "drivers/uart/Uart_errors.h"
 
-/* -------------------------------------------------------------------------
- * GLOBALS
- * ------------------------------------------------------------------------- */
 
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
-static circ rxbuffer;
+/* Max number of tries to read from/send to buffer*/
 #define MAX_TRYS (30)
-/* -------------------------------------------------------------------------
- * STRUCTS
- * ------------------------------------------------------------------------- */
+/*Error: TX buffer full (last character has not been sent)*/
+#define UART_TX_BUFFER_FULL_MAX_ATTEMPTS_REACHED (0x01)
+
+/*Error: RX buffer empty (has not received a character)*/
+#define UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED (0x02)
+
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
 /* @brief Initialises the UART
  * Follows init procedure recommended pg413 http://www.ti.com/lit/ug/slau144j/slau144j.pdf
- * @return ErrorCode: if no error ERROR_NONE or UART_ERROR_x
+ * @return 0 if successful, non-zero if not
  */
 void Uart_init(void);
-ErrorCode Uart_send_bytes(uint8_t *p_buffer, uint8_t offset, uint8_t length);
-ErrorCode Uart_recv_bytes(uint8_t * p_buffer, uint8_t offset, uint8_t count);
+uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in);
+uint8_t Uart_recv_bytes(uint8_t * p_buffer_out, uint8_t length_in);
 
 
 

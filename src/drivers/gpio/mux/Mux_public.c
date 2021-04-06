@@ -21,23 +21,13 @@
 #include <stdint.h>
 #include <msp430.h>
 #include "drivers/gpio/mux/Mux_public.h"
-#include "drivers/gpio/mux/Mux_errors.h"
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
+/* @brief Deals with P2.4 not being used for MUX */
 #define MUX_PINS (0x2F)
-/* -------------------------------------------------------------------------
- * GLOBALS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * ENUMS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
- * STRUCTS
- * ------------------------------------------------------------------------- */
-
+/* @brief MUX channel selected was outside of the allowed range*/
+#define MUX_CHANNEL_OUTSIDE_RANGE (0x01)
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
@@ -49,7 +39,7 @@ void Mux_init(void){
     P2DIR |= MUX_PINS;
 }
 
-ErrorCode Mux_select(uint8_t channel){
+uint8_t Mux_select(uint8_t channel){
     /* Takes input channel number and remaps for the analog pins
      * P2.0 - A4, P2.1 - A3, P2.2 - A2, P2.3 - A1, P2.5 - A0
      * Then sets appropriate logic to select the channel by turning all pins off
@@ -61,7 +51,7 @@ ErrorCode Mux_select(uint8_t channel){
     else{
         channel = ((channel & 0x01) << 5) | ((channel & 0x02) << 2) | ((channel & 0x04) << 0) | ((channel & 0x08) >> 2) | ((channel & 0x10) >> 4);
         P2OUT = (P2OUT & ~MUX_PINS) | channel;
-        return ERROR_NONE;
+        return 0;
     }
 }
 
