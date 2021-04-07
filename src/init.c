@@ -46,21 +46,20 @@ int init_msp430() {
     WDTCTL = WDTPW + WDTCNTCL + WDTSSEL + WDTIS0;
 
     /* Timer for periodical waking up */
-    TA0CCTL0 = CCIE;                              // enable interrupt for when reaching the TA0CCR0 condition
+    TA0CCTL0 = CCIE; // enable interrupt for when reaching the TA0CCR0 condition
     TA0CCR0 = 32678;      // TODO: Decide length (divide by 32678 for time in s)
     TA0CTL = TASSEL_1 | MC_1;                     // ACLK, up mode
 
     /* TOBC Timer */
-    TA1CCTL0 = CCIE;                              // enable interrupt for when reaching the TA1CCR0 condition
+    TA1CCTL0 = CCIE; // enable interrupt for when reaching the TA1CCR0 condition
     TA1CCR0 = 65356;      // TODO: Decide length (divide by 32678 for time in s)
     TA1CTL = TASSEL_1 | MC_1;                     // ACLK, up mode
 
-    /*
-     uint8_t i;
-     for(i=0; i< 10;i++){
-     i=2*i;
-     }*/
+    return 0;
+}
 
+/* Checks to see what the reason for the startup was and saves in the log file */
+int init_startup() {
     return 0;
 }
 
@@ -76,10 +75,7 @@ int init_components() {
 
 /* Loops through each application to initialise it */
 int init_applications() {
+    LogFile_init();
     return 0;
 }
 
-/* Checks to see what the reason for the startup was and saves in the log file */
-int init_startup() {
-    return 0;
-}

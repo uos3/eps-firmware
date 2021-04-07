@@ -21,6 +21,7 @@
 
 /* internal */
 #include "applications/interrupt_manager/InterruptManager_public.h"
+#include "applications/Log_File/LogFile_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS
