@@ -65,6 +65,7 @@ int init_startup() {
 
 /* Loops through each driver to initialise it */
 int init_drivers() {
+    Uart_init();
     return 0;
 }
 

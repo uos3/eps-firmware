@@ -21,7 +21,9 @@
 
 /* internal */
 #include "applications/interrupt_manager/InterruptManager_public.h"
-#include "applications/Log_File/LogFile_public.h"
+#include "applications/log_file/LogFile_public.h"
+
+#include "drivers/uart/Uart_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS
