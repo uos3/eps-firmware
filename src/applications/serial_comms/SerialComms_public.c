@@ -95,14 +95,14 @@ int SerialComms_process() {
         SerialComms_add_header(SERIAL_COMMS_PACKET,
         SERIAL_COMMS_RESPONSE_BATTERY_COMM);
 
-        /* Create a 2 byte command */
-        uint16_t battery_command =
-                ((uint16_t) p_packet_rx[SERIAL_COMMS_HEADER_LENGTH]) << 8;
-        battery_command |=
-                (uint16_t) p_packet_rx[SERIAL_COMMS_HEADER_LENGTH + 1];
+        /* Create a 1 byte command and 2 byte battery input data value */
+        uint8_t battery_command = p_packet_rx[SERIAL_COMMS_HEADER_LENGTH];
+        uint16_t battery_input_data =
+                ((uint16_t) p_packet_rx[SERIAL_COMMS_HEADER_LENGTH + 1]) << 8;
+        battery_input_data |= (uint16_t) p_packet_rx[SERIAL_COMMS_HEADER_LENGTH + 2];
 
         /* Send command to battery and get response */
-        uint16_t battery_response = BatteryComms_TX_RX(battery_command);
+        uint16_t battery_response = BatteryComms_TX_RX(battery_command, battery_input_data);
 
         /* Add battery response to TX packet */
         SERIAL_COMMS_PACKET[SERIAL_COMMS_HEADER_LENGTH] =

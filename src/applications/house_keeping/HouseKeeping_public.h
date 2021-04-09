@@ -22,6 +22,8 @@
 #include <stdint.h>
 
 /* Internal */
+#include "applications/house_keeping/HouseKeeping_private.h"
+
 #include "applications/battery_comms/BatteryComms_public.h"
 #include "applications/log_file/LogFile_public.h"
 
@@ -31,11 +33,11 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
+#define HOUSE_KEEPING_DATA_LENGTH (112)
+
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
-
-#define HOUSE_KEEPING_DATA_LENGTH (110)
 
 /* -------------------------------------------------------------------------
  * STRUCTS

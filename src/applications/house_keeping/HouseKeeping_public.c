@@ -14,30 +14,13 @@
 #include "HouseKeeping_public.h"
 
 int HouseKeeping_get_data(uint8_t *p_packet_out) {
-    uint8_t i;
-    uint16_t temp_collected_data;
+    /* Get battery status and ADC values (Bytes 0 - 31)*/
+    HouseKeeping_get_bat_data(p_packet_out);
 
-    /* Get battery data */
-
-    /* Battery status */
-    temp_collected_data = BatteryComms_TX_RX(0x0100);
-    p_packet_out[0] = (uint8_t) temp_collected_data >> 4;
-    p_packet_out[1] = (uint8_t) temp_collected_data;
-
-    /* Battery ADCs (15 values available)*/
-    for (i = 0; i < 15; i++) {
-        /* Get value from ith ADC */
-        temp_collected_data = BatteryComms_TX_RX((uint16_t) i);
-
-        /* Append it to the packet */
-        p_packet_out[i + i + 2u] = (uint8_t) temp_collected_data >> 4;
-        p_packet_out[i + i + 3u] = (uint8_t) temp_collected_data;
-    }
-
-    /* Get data from each rail */
+    /* Get data from each rail (Bytes 32 - 104)*/
     Rails_get_data(&p_packet_out[33]);
 
-    /* Read the Log File */
+    /* Read the Log File (Bytes 105 - 112)*/
     LogFile_read(&p_packet_out[106]);
 
     /* Clear log now that it has been read */
@@ -45,4 +28,6 @@ int HouseKeeping_get_data(uint8_t *p_packet_out) {
 
     return 0;
 }
+
+
 

@@ -5,7 +5,7 @@
  * @brief Hold functions to transmit to and receive from the battery.
  *
  * @version 0.1
- * @date 2021-04-02
+ * @date 2021-04-09
  *
  * @copyright UOS3
  */
@@ -21,14 +21,21 @@
 #include <stdint.h>
 
 /* Internal */
+#include "drivers/i2c/I2c_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
 
+#define BATTERY_I2C_ADDR (0x2A)
+#define BATTERY_PACKET_MAX_LENGTH (3)
+#define BATTERY_RX_PACKET_LENGTH (2)
+
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
+
+uint8_t BATTERY_PACKET[BATTERY_PACKET_MAX_LENGTH];
 
 /* -------------------------------------------------------------------------
  * STRUCTS
@@ -38,7 +45,7 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-uint8_t Battery_TX(uint16_t command);
+uint8_t Battery_TX(uint8_t command_in, uint16_t data_in);
 
 uint16_t Battery_RX();
 

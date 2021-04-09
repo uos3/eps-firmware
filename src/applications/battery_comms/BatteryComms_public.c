@@ -13,8 +13,13 @@
 #include "BatteryComms_public.h"
 
 /* Transmit given command to the battery and then get the response */
-uint16_t BatteryComms_TX_RX(uint16_t command) {
-    Battery_TX(command);
-    return Battery_RX();
+uint16_t BatteryComms_TX_RX(uint8_t command_in, uint16_t data_in) {
+    Battery_TX(command_in, data_in);
+
+    /* Only expect a response if a manual reset was not ordered */
+    if (command_in != 0x80) {
+        return Battery_RX();
+    }
+    return 0;
 }
 
