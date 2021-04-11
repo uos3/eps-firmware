@@ -2,7 +2,11 @@
  *
  * @file Battery_public.c
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Hold functions to transmit to and receive from the battery.
+ * @brief Public Battery component source file
+ *
+ * Hold functions to transmit to and receive from the battery.
+ *
+ * Task ref: [EPS_SW_1.6.2]
  *
  * @version 0.1
  * @date 2021-04-09

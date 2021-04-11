@@ -2,7 +2,9 @@
  *
  * @file ConfigFile_public.c
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Pass on commands to the flash editor and tell it to consider
+ * @brief Public Config File application source file
+ *
+ * Pass on commands to the flash editor and tell it to consider
  * the config portion of the flash.
  *
  * @version 0.1

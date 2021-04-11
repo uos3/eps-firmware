@@ -23,7 +23,13 @@
 #include "applications/interrupt_manager/InterruptManager_public.h"
 #include "applications/log_file/LogFile_public.h"
 
+#include "components/rails/Rails_public.h"
+#include "components/interrupts/Interrupts_public.h"
+
 #include "drivers/uart/Uart_public.h"
+#include "drivers/gpio/mux/Mux_public.h"
+#include "drivers/gpio/mux2/Mux2_public.h"
+#include "drivers/gpio/adc/Adc_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS
@@ -33,9 +39,6 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-#define RX_PIN BIT5
-#define TX_PIN BIT4
-
 /* -------------------------------------------------------------------------
  * STRUCTS
  * ------------------------------------------------------------------------- */
@@ -43,10 +46,12 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-int init_msp430();
-int init_drivers();
-int init_components();
-int init_applications();
-int init_startup();
+
+void init_msp430();
+void init_drivers();
+void init_components();
+void init_applications();
+void init_startup();
+void init_interrupts();
 
 #endif /* INIT_H_ */

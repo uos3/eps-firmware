@@ -2,8 +2,7 @@
  *
  * @file ConfigFile_public.h
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Pass on commands to the flash editor and tell it to consider
- * the config portion of the flash.
+ * @brief Public Config File application header file
  *
  * @version 0.1
  * @date 2021-04-06
@@ -32,13 +31,13 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-#define CONFIG_FILE_LENGTH (6)
+#define CONFIG_FILE_LENGTH (7)
 
 /* Address for each config variable */
 #define CONFIG_FILE_OCP (0x00)
 #define CONFIG_FILE_WDT_INTERVAL (0x01)
-#define CONFIG_FILE_WAKE_TIMER (0x02)
-#define CONFIG_FILE_TOBC_TIMER (0x04)
+#define CONFIG_FILE_WAKE_TIMER (0x03)
+#define CONFIG_FILE_TOBC_TIMER (0x05)
 
 
 /* -------------------------------------------------------------------------

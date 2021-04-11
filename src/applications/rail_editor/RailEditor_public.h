@@ -2,7 +2,7 @@
  *
  * @file RailEditor_public.h
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Decide which rails should be turned on and off.
+ * @brief Public Rail Editor application header file
  *
  * @version 0.1
  * @date 2021-04-04
@@ -32,16 +32,7 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-/* Pin number on the P1 bank */
-#define OCP1_PIN BIT2
-#define OCP2_PIN BIT1
-#define OCP3_PIN BIT0
-#define OCP4_PIN BIT5
-#define OCP5_PIN BIT4
-#define OCP6_PIN BIT3
-#define TOBC_PIN BIT3
-
-#define RAIL_EDITOR_TOBC_RAIL OCP4_PIN
+#define RAIL_EDITOR_TOBC_RAIL RAILS_OCP4_PIN
 
 /* -------------------------------------------------------------------------
  * STRUCTS

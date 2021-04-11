@@ -2,7 +2,9 @@
  *
  * @file OCP_public.c
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Decide what should be done if an OCP rail has tripped.
+ * @brief Public Over Current Protection event handler source file
+ *
+ * Decide what should be done if an OCP rail has tripped.
  *
  * Task ref: [EPS_SW_1.4.3]
  *

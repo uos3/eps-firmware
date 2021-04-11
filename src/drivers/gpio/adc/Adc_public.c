@@ -14,12 +14,8 @@
  * INCLUDES
  * ------------------------------------------------------------------------- */
 
-/* Standard library includes */
-#include <stdio.h>
-#include <stdint.h>
-#include <msp430.h>
-
-
+/* Internal includes */
+#include "Adc_public.h"
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

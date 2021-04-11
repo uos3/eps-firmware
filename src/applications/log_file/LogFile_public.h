@@ -2,8 +2,7 @@
  *
  * @file LogFile_public.h
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
- * @brief Implement a cache system for writing log events and pass on
- * log specific commands to the Flash Editor.
+ * @brief Public Log File application header file
  *
  * @version 0.1
  * @date 2021-04-07

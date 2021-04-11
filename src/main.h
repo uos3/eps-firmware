@@ -38,24 +38,9 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint16_t INTERRUPT_FLAGS = 0;
-
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
-
-#define UART_FLAG BIT0
-#define WATCHDOG_FLAG BIT1
-#define TOBC_PIN_FLAG BIT2
-#define OCP_FLAG BIT3
-
-/* Pin number on the P1 bank */
-#define OCP1_FLAG BIT4
-#define OCP2_FLAG BIT5
-#define OCP3_FLAG BIT6
-#define OCP4_FLAG BIT7
-#define OCP5_FLAG BIT8
-#define OCP6_FLAG BIT9
 
 /* -------------------------------------------------------------------------
  * STRUCTS

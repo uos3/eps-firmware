@@ -37,7 +37,7 @@ uint8_t Flash_init(void) {
 uint8_t Flash_read(uint8_t address, uint8_t bytecount_in, uint8_t *p_data_out) {
     /*@brief sets the address and reads the data from the flash*/
     int i;
-    uint8_t *p_Flash (uint8_t *) address;
+    uint8_t *p_Flash = (uint8_t *) address;
     for(i = 0; i < bytecount_in; i ++) {
         *p_data_out = *p_Flash;
         p_Flash++;
@@ -49,7 +49,7 @@ uint8_t Flash_read(uint8_t address, uint8_t bytecount_in, uint8_t *p_data_out) {
 uint8_t Flash_write(uint8_t address, uint8_t bytecount_in, uint8_t *p_data_in) {
     /*@brief writes to the flash by first erasing, and then writing the data from p_data_in*/
     int i;
-    uint8_t *p_Flash (uint8_t *) address;
+    uint8_t *p_Flash = (uint8_t *) address;
     FCTL3 = FWKEY;
     FCTL1 = FWKEY + ERASE;
     *p_Flash = 0;
