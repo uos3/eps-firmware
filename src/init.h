@@ -30,6 +30,7 @@
 #include "drivers/gpio/mux/Mux_public.h"
 #include "drivers/gpio/mux2/Mux2_public.h"
 #include "drivers/gpio/adc/Adc_public.h"
+#include "drivers/flash/Flash_public.h"
 
 /* -------------------------------------------------------------------------
  * GLOBALS

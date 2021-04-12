@@ -24,6 +24,7 @@
 
 /* Internal includes */
 #include <msp430.h>
+#include "Flash_public.h"
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

@@ -7,6 +7,8 @@
  * Pass on commands to the flash editor and tell it to consider
  * the config portion of the flash.
  *
+ * Task ref: [EPS_SW_1.5.6]
+ *
  * @version 0.1
  * @date 2021-04-06
  *

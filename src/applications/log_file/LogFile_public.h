@@ -4,6 +4,8 @@
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
  * @brief Public Log File application header file
  *
+ * Task ref: [EPS_SW_1.5.7]
+ *
  * @version 0.1
  * @date 2021-04-07
  *

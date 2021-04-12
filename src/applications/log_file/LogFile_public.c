@@ -7,6 +7,8 @@
  * Implement a cache system for writing log events and pass on
  * log specific commands to the Flash Editor.
  *
+ * Task ref: [EPS_SW_1.5.7]
+ *
  * @version 0.1
  * @date 2021-04-07
  *

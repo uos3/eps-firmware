@@ -44,6 +44,7 @@ void init_drivers() {
     Mux_init();
     Mux2_init();
     Uart_init();
+    Flash_init();
 }
 
 /* Loops through each component to initialise it */

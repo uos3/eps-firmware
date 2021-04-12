@@ -24,7 +24,6 @@
 #include <stdio.h>
 #include <stdint.h>
 
-
 /* Internal includes */
 #include <msp430.h>
 
@@ -34,7 +33,5 @@
 uint8_t Flash_init(void);
 uint8_t Flash_read(uint8_t address, uint8_t bytecount_in, uint8_t *p_data_out);
 uint8_t Flash_write(uint8_t address, uint8_t bytecount_in, uint8_t *p_data_in);
-
-
 
 #endif /* DRIVERS_FLASH_FLASH_PUBLIC_H_ */
