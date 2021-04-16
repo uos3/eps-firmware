@@ -45,9 +45,9 @@ void Uart_init(void){
     UCA0CTL1 |= UCSSEL_2;
     /*Sets baud rate to 56000, 8MHz clock speed
      * calculated values using http://mspgcc.sourceforge.net/baudrate.html */
-    UCA0BR0 = 0x8E;
-    UCA0BR1 = 0x00;
-    UCA0MCTL = 0xF7;
+    UCA0BR0 = (8000000 / 56000UL) & 0xFF;
+    UCA0BR1 = ((8000000 / 56000UL) >> 8) & 0xFF;
+    UCA0MCTL = 0x0E;
 
     /*Sets pins for RX (3.5) and TX(3.4)*/
     P3SEL |= BIT4 | BIT5;
@@ -110,9 +110,5 @@ uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in){
 
 /*#pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCIORX_ISR(void) {
-
 }
 */
-
-
-
