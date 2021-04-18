@@ -38,7 +38,7 @@ uint8_t Rails_get_data(uint8_t *p_packet_out) {
             /* Select pin on the MUX and only continue if it is successful */
             if (Mux_select(j) == 0) {
                 /* Convert the data and append it to the packet */
-                i = Rails_append_adc_data(Adc_convert(ADC_CHANNEL_MUX1),
+                i = Convert_16bit_to_8bit(Adc_convert(ADC_CHANNEL_MUX1),
                                           p_packet_out, i);
             }
         }
@@ -49,7 +49,7 @@ uint8_t Rails_get_data(uint8_t *p_packet_out) {
         /* Select pin on the MUX and only continue if it is successful */
         if (Mux2_select(j) == 0) {
             /* Convert the data and append it to the packet */
-            i = Rails_append_adc_data(Adc_convert(ADC_CHANNEL_MUX2),
+            i = Convert_16bit_to_8bit(Adc_convert(ADC_CHANNEL_MUX2),
                                       p_packet_out, i);
         }
     }
@@ -101,11 +101,4 @@ uint8_t Rails_convert_rail(uint8_t rail_num_in) {
     return 0;
 }
 
-/* Add the ADC data the output packet so that the Most Significant Byte
- * of the 2 byte ADC value is first */
-uint8_t Rails_append_adc_data(uint16_t data_in, uint8_t *p_packet_out,
-                              uint8_t i_inout) {
-    p_packet_out[i_inout + i_inout] = (uint8_t) data_in >> 8;
-    p_packet_out[i_inout + i_inout + 1u] = (uint8_t) data_in;
-    return i_inout++;
-}
+

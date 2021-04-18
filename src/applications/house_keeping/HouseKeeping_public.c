@@ -22,7 +22,7 @@ int HouseKeeping_get_data(uint8_t *p_packet_out) {
     HouseKeeping_get_bat_data(p_packet_out);
 
     /* Read the temperature sensor and append the data to the packet */
-    Rails_append_adc_data(Adc_convert(ADC_TEMP_SENSOR), p_packet_out, 32);
+    Convert_16bit_to_8bit(Adc_convert(ADC_TEMP_SENSOR), p_packet_out, 32);
 
     /* Get data from each rail (Bytes 34 - 103)*/
     Rails_get_data(&p_packet_out[34]);
@@ -35,6 +35,4 @@ int HouseKeeping_get_data(uint8_t *p_packet_out) {
 
     return 0;
 }
-
-
 

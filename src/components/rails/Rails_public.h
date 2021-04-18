@@ -28,6 +28,7 @@
 #include "drivers/gpio/adc/Adc_public.h"
 #include "drivers/gpio/mux/Mux_public.h"
 #include "drivers/gpio/mux2/Mux2_public.h"
+#include "util/convert_16bit/Convert_16bit_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
@@ -59,7 +60,5 @@ void Rails_init();
 uint8_t Rails_get_data(uint8_t *p_packet_out);
 void Rails_set(uint8_t rail_num_in, uint8_t new_state_in);
 uint8_t Rails_convert_rail(uint8_t rail_num_in);
-uint8_t Rails_append_adc_data(uint16_t data_in, uint8_t *p_packet_out,
-                              uint8_t i_inout);
 
 #endif /* COMPONENTS_RAILS_RAILS_PUBLIC_H_ */

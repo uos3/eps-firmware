@@ -25,6 +25,8 @@
 
 /* Internal */
 #include "components/rails/Rails_public.h"
+#include "components/serial/Serial_public.h"
+
 #include "applications/config_file/ConfigFile_public.h"
 
 /* -------------------------------------------------------------------------

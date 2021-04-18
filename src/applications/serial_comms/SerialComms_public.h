@@ -32,33 +32,11 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-#define SERIAL_COMMS_HEADER_LENGTH (4)
-#define SERIAL_COMMS_COMMAND_ADDRESS (2)
-
-#define SERIAL_COMMS_COMMAND_UPDATE_CONFIG (0x00)
-#define SERIAL_COMMS_COMMAND_SET_RAIL (0x01)
-#define SERIAL_COMMS_COMMAND_RESET_RAIL (0x02)
-#define SERIAL_COMMS_COMMAND_BATTERY_COMM (0x03)
-#define SERIAL_COMMS_COMMAND_HOUSE_KEEPING (0x04)
-
-#define SERIAL_COMMS_RESPONSE_TYPE_ADDRESS (2)
-
-#define SERIAL_COMMS_RESPONSE_UPDATE_CONFIG (0x00)
-#define SERIAL_COMMS_RESPONSE_SET_RAIL (0x01)
-#define SERIAL_COMMS_RESPONSE_RESET_RAIL (0x02)
-#define SERIAL_COMMS_RESPONSE_BATTERY_COMM (0x03)
-#define SERIAL_COMMS_RESPONSE_HOUSE_KEEPING (0x04)
-#define SERIAL_COMMS_RESPONSE_NO_DATA (0x05)
-#define SERIAL_COMMS_RESPONSE_CORRUPTED_DATA (0x06)
-#define SERIAL_COMMS_RESPONSE_UNRECOGNISED_COMMAND (0x07)
-
-#define SERIAL_COMMS_PACKET_LENGTH (136)
-
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint8_t SERIAL_COMMS_PACKET[SERIAL_COMMS_PACKET_LENGTH];
+uint8_t SERIAL_COMMS_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
 
 /* -------------------------------------------------------------------------
  * STRUCTS

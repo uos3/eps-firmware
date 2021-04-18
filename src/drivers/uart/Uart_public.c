@@ -27,7 +27,6 @@
 #include "drivers/uart/Uart_public.h"
 #include <msp430.h>
 
-
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
@@ -35,7 +34,7 @@
  * Follows init procedure recommended pg413 http://www.ti.com/lit/ug/slau144j/slau144j.pdf
  * @return 0 if successful, non-zero if not
  */
-void Uart_init(void){
+void Uart_init(void) {
 
     /* Initialises the UART through the USCI*/
     /* Sets UCSWRST to 1*/
@@ -64,42 +63,41 @@ void Uart_init(void){
 
 }
 
-uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in){
+uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
     /*Writes content of p_buffer to TX buffer to be sent over the UART */
     uint8_t i, j;
-    for (i = 0; i < length_in; i ++) {
-        for(j = 0; j < MAX_TRYS + 1;) {
+    for (i = 0; i < length_in; i++) {
+        for (j = 0; j < MAX_TRYS + 1;) {
             /* checks UCA0TXBUF empty */
-            if(IFG2 & UCA0TXIFG) {
+            if (IFG2 & UCA0TXIFG) {
                 UCA0TXBUF = p_buffer_in[i];
             }
             else {
-                j ++;
+                j++;
             }
         }
-        if(j == MAX_TRYS) {
+        if (j == MAX_TRYS) {
             return UART_TX_BUFFER_FULL_MAX_ATTEMPTS_REACHED;
         }
     }
     return 0;
 }
 
-
-uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in){
+uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in) {
     /* Checks the interrupt flag to see if a character has been received,
      * then reads and stores in p_buffer_out*/
     uint8_t i, j;
-    for (i = 0; i < length_in; i ++) {
-        for(j = 0; j < MAX_TRYS + 1;) {
-            if(IFG2 & UCA0RXIFG) {
-                        p_buffer_out[i] = UCA0RXBUF;
-                        IFG2 &= ~UCA0RXIFG; /*Clears RX flag */
-                    }
-            else {
-                j ++;
-                }
+    for (i = 0; i < length_in; i++) {
+        for (j = 0; j < MAX_TRYS + 1;) {
+            if (IFG2 & UCA0RXIFG) {
+                p_buffer_out[i] = UCA0RXBUF;
+                IFG2 &= ~UCA0RXIFG; /*Clears RX flag */
             }
-        if(j == MAX_TRYS) {
+            else {
+                j++;
+            }
+        }
+        if (j == MAX_TRYS) {
             return UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED;
         }
 
@@ -107,8 +105,7 @@ uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in){
     return 0;
 }
 
-
 /*#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCIORX_ISR(void) {
-}
-*/
+ __interrupt void USCIORX_ISR(void) {
+ }
+ */

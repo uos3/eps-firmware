@@ -127,14 +127,18 @@ __interrupt void Port_1(void) {
         INTERRUPTS_FLAGS |= INTERRUPTS_TOBC_INT_FLAG;
         P1IFG &= ~INTERRUPTS_TOBC_INT_PIN;
     }
-
-    __bic_SR_register_on_exit(LPM3_bits);  // Wake up
+    /* Enable interrupts on wake (bit set status register
+     * on exit Global Interrupt Enable) */
+    __bis_SR_register_on_exit(GIE);
+    /* Wake up (bit clear Status Register on exit Low Power Mode 3) */
+    __bic_SR_register_on_exit(LPM3_bits);
 }
 
 /* Interrupt service routine to periodically wake up the EPS by leaving
  * Low Power Mode 3 */
 #pragma vector = TIMER0_A0_VECTOR
 __interrupt void Timer_A_CCR0_ISR(void) {
+    __bis_SR_register_on_exit(GIE);
     __bic_SR_register_on_exit(LPM3_bits);
 }
 
@@ -143,12 +147,16 @@ __interrupt void Timer_A_CCR0_ISR(void) {
 #pragma vector = TIMER1_A0_VECTOR
 __interrupt void Timer_A_CCR1_ISR(void) {
     INTERRUPTS_FLAGS |= INTERRUPTS_WATCHDOG_FLAG;
+    __bis_SR_register_on_exit(GIE);
     __bic_SR_register_on_exit(LPM3_bits);
 }
 
 /* UART RX interrupt service routine */
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void) {
+    /* Collect arriving data into the buffer */
+    Serial_process_RX();
     INTERRUPTS_FLAGS |= INTERRUPTS_UART_FLAG;
+    __bis_SR_register_on_exit(GIE);
     __bic_SR_register_on_exit(LPM3_bits);
 }

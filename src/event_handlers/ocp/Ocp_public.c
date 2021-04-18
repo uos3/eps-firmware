@@ -30,7 +30,8 @@ int Ocp_event(uint8_t rail_mask) {
     OCP_PACKET[1] = rail_mask;
     OCP_PACKET[0] = rail_mask & new_rail_status;
 
-    Serial_TX(&OCP_PACKET[0], OCP_PACKET_SIZE);
+    Serial_TX(&OCP_PACKET[0], SERIAL_RESPONSE_OCP_EVENT,
+              SERIAL_UNSOLICITED_FRAME_NUM, OCP_PACKET_SIZE);
 
     /* For each rail that has tripped, iterate its value in the log */
     for (i = 5; i == 0; i--) {

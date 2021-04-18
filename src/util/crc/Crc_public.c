@@ -37,6 +37,7 @@ uint16_t Crc(uint8_t Data, uint16_t Syndrome)
     }
     return (Syndrome);
 }
+
 /* Encoding procedure
 * NOTE: Assumption is that enough memory has been allocated for byte
 * stream B to allow for generation of the checksum value.

@@ -29,8 +29,10 @@
  * Defines
  * ------------------------------------------------------------------------- */
 
-#define CRC_ERROR_DETECTED 0
-#define CRC_NO_ERROR_DETECTED 1
+#define CRC_ERROR_DETECTED (0)
+#define CRC_NO_ERROR_DETECTED (1)
+
+#define CRC_LENGTH (2)
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

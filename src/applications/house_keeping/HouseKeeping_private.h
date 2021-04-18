@@ -25,6 +25,7 @@
 /* Internal */
 #include "applications/battery_comms/BatteryComms_public.h"
 #include "components/rails/Rails_public.h"
+#include "util/convert_16bit/Convert_16bit_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
