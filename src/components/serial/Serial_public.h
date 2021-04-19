@@ -48,6 +48,18 @@
 /* Set an OCP rail to OFF then ON */
 #define SERIAL_COMMAND_RESET_RAIL (4)
 
+/* Payload size for each command received from TOBC */
+/* Get all house keeping data */
+#define SERIAL_PAYLOAD_SIZE_HOUSE_KEEPING (0)
+/* Change the values in the config to the ones in the data packet */
+#define SERIAL_PAYLOAD_SIZE_UPDATE_CONFIG (3)
+/* Set the state of the OCP rails */
+#define SERIAL_PAYLOAD_SIZE_SET_RAIL (1)
+/* Pass on a command to the battery */
+#define SERIAL_PAYLOAD_SIZE_BATTERY_COMM (3)
+/* Set an OCP rail to OFF then ON */
+#define SERIAL_PAYLOAD_SIZE_RESET_RAIL (1)
+
 /* Possible responses EPS can send to the TOBC */
 /* Return house keeping data */
 #define SERIAL_RESPONSE_HOUSE_KEEPING (129)
@@ -60,6 +72,7 @@
 /* Return battery response */
 #define SERIAL_RESPONSE_OCP_EVENT (133)
 
+/* TODO: add to ICD */
 //#define SERIAL_RESPONSE_NO_DATA (0x05)
 //#define SERIAL_RESPONSE_CORRUPTED_DATA (0x06)
 //#define SERIAL_RESPONSE_UNRECOGNISED_COMMAND (0x07)
@@ -69,10 +82,8 @@
 #define SERIAL_PAYLOAD_LENGTH (128)
 #define SERIAL_TX_PACKET_TOTAL_LENGTH (SERIAL_HEADER_LENGTH + SERIAL_PAYLOAD_LENGTH + CRC_LENGTH)
 
-/* Length of RX Header + Payload */
-#define SERIAL_RX_DATA_LENGTH (16)
-/* Length of RX Header + Payload + CRC (Total packet) */
-#define SERIAL_RX_PACKET_TOTAL_LENGTH (16 + CRC_LENGTH)
+/* Length of RX Header + Payload + CRC */
+#define SERIAL_RX_PACKET_MAX_LENGTH (7)
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

@@ -14,9 +14,18 @@
  * @copyright UOS3
  */
 
+/* -------------------------------------------------------------------------
+ * INCLUDES
+ * ------------------------------------------------------------------------- */
+
 #include "Interrupts_public.h"
 
+/* -------------------------------------------------------------------------
+ * FUNCTIONS
+ * ------------------------------------------------------------------------- */
+
 void Interrupts_init() {
+    uint16_t interval;
     INTERRUPTS_FLAGS = 0;
 
     /* Set TOBC interrupt pin as input */
@@ -31,65 +40,40 @@ void Interrupts_init() {
     P1IFG &= ~INTERRUPTS_TOBC_INT_PIN;
 
     /* ---- Watchdog ---- */
-    /* Get watchdog interval from config */
-    ConfigFile_read(CONFIG_FILE_WDT_INTERVAL, INTERRUPTS_8BIT_INTERVAL);
-
-    /* Convert the interval stored in the 8bit array to a 16bit variable */
-    INTERRUPTS_INTERVAL = INTERRUPTS_8BIT_INTERVAL[0] << 8
-            | INTERRUPTS_8BIT_INTERVAL[1];
-
-    /* If it is not a valid value, set it the default
-     * (WDTIS1 for 64s, WDTIS0 for 4s) */
-    if (INTERRUPTS_INTERVAL != 0 && INTERRUPTS_INTERVAL != 1
-            && INTERRUPTS_INTERVAL != 2 && INTERRUPTS_INTERVAL != 3) {
-        INTERRUPTS_INTERVAL = WDTIS1;
-    }
     /* Configure and start watchdog by:
      *  - giving it the password
      *  - clearing the counter
      *  - using the ACLK clock which is the only one that stays on in LPM3
-     *  - setting the interval to reset (0x01 for 4s) */
-    /* TODO: decide on duration and if this should be
-     * used as an EPS reset will cause all rails to turn on */
-    WDTCTL = WDTPW | WDTCNTCL | WDTSSEL | INTERRUPTS_INTERVAL;
+     *  - setting the interval to 64s to reset (0x01 (WDTIS0) for 4s,
+     *  0x10 (WDTIS1) for 64s) */
+    /* TODO: decide if this should be used as an EPS reset
+     *  will cause all rails to turn on */
+    WDTCTL = WDTPW | WDTCNTCL | WDTSSEL | WDTIS1;
 
     /* ---- Timer for periodical waking up (Timer A_0) ---- */
-    /* Get timer interval from config */
-    ConfigFile_read(CONFIG_FILE_WAKE_TIMER, INTERRUPTS_8BIT_INTERVAL);
-
-    /* Convert the interval stored in the 8bit array to a 16bit variable */
-    INTERRUPTS_INTERVAL = INTERRUPTS_8BIT_INTERVAL[0] << 8
-            | INTERRUPTS_8BIT_INTERVAL[1];
-    /* If it is invalid, set it to default */
-    if (INTERRUPTS_INTERVAL == 0 || INTERRUPTS_INTERVAL == 0xFFFF) {
-        INTERRUPTS_INTERVAL = 65356;
-    }
     /* Enable interrupt for when reaching the TA0CCR0 condition */
     TA0CCTL0 = CCIE;
-    /* Set length (divide by 32678 for time in s) */
-    TA0CCR0 = INTERRUPTS_INTERVAL;
-    /* ACLK, up mode */
-    TA0CTL = TASSEL_1 | MC_1;
+    /* Set length to 31s (divide by 2048 for time in s) */
+    TA0CCR0 = 0xFFFF;
+    /* ACLK, /8 input divider, up/down mode */
+    TA0CTL = TASSEL_1 | ID_1 | ID_0 | MC_1 | MC_0;
 
     /* ---- TOBC Timer (Timer A_1) ---- */
     /* Get timer interval from config */
-    ConfigFile_read(CONFIG_FILE_TOBC_TIMER, INTERRUPTS_8BIT_INTERVAL);
-    /* Convert the interval stored in the 8bit array to a 16bit variable */
-    INTERRUPTS_INTERVAL = INTERRUPTS_8BIT_INTERVAL[0] << 8
-            | INTERRUPTS_8BIT_INTERVAL[1];
-    /* If it is invalid, set it to default */
-    if (INTERRUPTS_INTERVAL == 0 || INTERRUPTS_INTERVAL == 0xFFFF) {
-        INTERRUPTS_INTERVAL = 65356;
+    ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &interval);
+    /* If it is invalid, set it to default (32s) */
+    if (interval == 0) {
+        interval = 0xFFFF;
     }
     /* Enable interrupt for when reaching the TA1CCR0 condition */
     TA1CCTL0 = CCIE;
-    /* Set length (divide by 32678 for time in s) */
-    TA1CCR0 = INTERRUPTS_INTERVAL;
-    /* ACLK, up mode */
-    TA1CTL = TASSEL_1 | MC_1;
+    /* Set length (divide by 2048 for time in s) */
+    TA1CCR0 = interval;
+    /* ACLK, /8 input divider, up/down mode */
+    TA1CTL = TASSEL_1 | ID_1 | ID_0 | MC_1 | MC_0;
 }
 
-/* Port 1 interrupt service routine */
+/* Port 1 interrupt service routine (OCP events and TOBC resetting timer) */
 #pragma vector = PORT1_VECTOR
 __interrupt void Port_1(void) {
 

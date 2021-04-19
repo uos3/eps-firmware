@@ -35,8 +35,8 @@ int SerialComms_process() {
         return 1;
     }
 
-    /* Check if CRC was passed */
-    if ((valid_packet == 0) || (length <= SERIAL_HEADER_LENGTH)) {
+    /* Check if CRC was passed TODO: add to ICD*/
+    if (valid_packet == 0) {
 //        /* Set type of response in header */
 //        SerialComms_add_header(SERIAL_COMMS_PACKET,
 //        SERIAL_RESPONSE_CORRUPTED_DATA);
@@ -47,7 +47,8 @@ int SerialComms_process() {
 
     /* Go through responses for each command that could be received */
     switch (p_packet_rx[SERIAL_COMMAND_ADDRESS]) {
-    /* TOBC commands to update the config file */
+
+    /* ----- TOBC commands to update the config file ----- */
     case SERIAL_COMMAND_UPDATE_CONFIG: {
         /* Write data from the packet to the config */
         ConfigFile_write(&p_packet_rx[SERIAL_HEADER_LENGTH]);
@@ -61,7 +62,8 @@ int SerialComms_process() {
         }
         break;
     }
-        /* TOBC commands setting rails */
+
+        /* ----- TOBC commands setting rails ----- */
     case SERIAL_COMMAND_SET_RAIL: {
         /* Set required rail to given status */
         RailEditor_set_rails(p_packet_rx[SERIAL_HEADER_LENGTH],
@@ -70,14 +72,13 @@ int SerialComms_process() {
         /* Set TX packet header */
         response = SERIAL_RESPONSE_SET_RAIL;
 
-        /* Set values in TX packet to be the rail mask and rail status used */
-        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] =
-                p_packet_rx[SERIAL_HEADER_LENGTH];
-        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH + 1] =
-                p_packet_rx[SERIAL_HEADER_LENGTH + 1];
+        /* Set values in TX packet to be what rails are currently on */
+        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] = RAILS_CURRENT_STATE;
+        length = SERIAL_HEADER_LENGTH + 1;
         break;
     }
-        /* TOBC commands turning a rail off then on */
+
+        /* ----- TOBC commands turning a rail off then on ----- */
     case SERIAL_COMMAND_RESET_RAIL: {
         /* Turn given rails off then on */
         RailEditor_set_rails(p_packet_rx[SERIAL_HEADER_LENGTH], 0);
@@ -85,11 +86,13 @@ int SerialComms_process() {
 
         response = SERIAL_RESPONSE_SET_RAIL;
 
-        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] =
-                p_packet_rx[SERIAL_HEADER_LENGTH];
+        /* Set values in TX packet to be what rails are currently on */
+        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] = RAILS_CURRENT_STATE;
+        length = SERIAL_HEADER_LENGTH + 1;
         break;
     }
-        /* TOBC requests communication with the battery */
+
+        /* ----- TOBC requests communication with the battery ----- */
     case SERIAL_COMMAND_BATTERY_COMM: {
         response = SERIAL_RESPONSE_BATTERY_COMM;
 
@@ -100,17 +103,19 @@ int SerialComms_process() {
         battery_input_data |= (uint16_t) p_packet_rx[SERIAL_HEADER_LENGTH + 2];
 
         /* Send command to battery and get response */
-        uint16_t battery_response = BatteryComms_TX_RX(battery_command, battery_input_data);
+        uint16_t battery_response = BatteryComms_TX_RX(battery_command,
+                                                       battery_input_data);
 
         /* Add battery response to TX packet */
-        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] =
-                (uint8_t) (battery_response >> 4);
+        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] = (uint8_t) (battery_response
+                >> 4);
         SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH + 1] =
                 (uint8_t) battery_response;
 
         break;
     }
-        /* TOBC requests house keeping data */
+
+        /* ----- TOBC requests house keeping data ----- */
     case SERIAL_COMMAND_HOUSE_KEEPING: {
         /* Create header for TX */
         response = SERIAL_RESPONSE_HOUSE_KEEPING;
@@ -122,8 +127,10 @@ int SerialComms_process() {
         length = SERIAL_HEADER_LENGTH + HOUSE_KEEPING_DATA_LENGTH;
         break;
     }
-        /* Unrecognised command */
+
+        /* ----- Unrecognised command ----- */
     default: {
+        /* TODO: add to ICD */
 //        SerialComms_add_header(SERIAL_COMMS_PACKET,
 //        SERIAL_RESPONSE_UNRECOGNISED_COMMAND);
 //        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_HEADER_LENGTH);

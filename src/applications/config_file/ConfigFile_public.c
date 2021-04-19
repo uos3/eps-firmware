@@ -17,12 +17,36 @@
 
 #include "ConfigFile_public.h"
 
-uint8_t ConfigFile_read(uint8_t address, uint8_t *p_data_out) {
+/* -------------------------------------------------------------------------
+ * GLOBALS
+ * ------------------------------------------------------------------------- */
+
+uint8_t CONFIG_FILE_DATA_8BIT[2];
+
+/* -------------------------------------------------------------------------
+ * FUNCTIONS
+ * ------------------------------------------------------------------------- */
+
+uint8_t ConfigFile_read_8bit(uint8_t address, uint8_t *p_data_out) {
     /* Modify the address so that the flash editor knows it is
      * referring to the config.
      */
     address |= FLASH_EDITOR_CONFIG_BIT;
-    return FlashEditor_read(address, p_data_out);
+    return FlashEditor_read(address, p_data_out, 1);
+}
+
+uint8_t ConfigFile_read_16bit(uint8_t address, uint16_t *p_data_out) {
+    /* Modify the address so that the flash editor knows it is
+     * referring to the config.
+     */
+    address |= FLASH_EDITOR_CONFIG_BIT;
+
+    uint8_t return_value = FlashEditor_read(address, CONFIG_FILE_DATA_8BIT, 2);
+
+    *p_data_out = ((uint16_t) CONFIG_FILE_DATA_8BIT[0])
+            + (((uint16_t) CONFIG_FILE_DATA_8BIT[1]) << 8);
+
+    return return_value;
 }
 
 uint8_t ConfigFile_write(uint8_t *p_data_in) {

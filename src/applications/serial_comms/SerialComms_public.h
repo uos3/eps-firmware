@@ -22,6 +22,7 @@
 
 /* Internal */
 #include "components/serial/Serial_public.h"
+#include "components/rails/Rails_public.h"
 
 #include "applications/config_file/ConfigFile_public.h"
 #include "applications/rail_editor/RailEditor_public.h"
@@ -46,6 +47,5 @@ uint8_t SERIAL_COMMS_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 int SerialComms_process();
-void SerialComms_add_header(uint8_t *p_packet_out, uint8_t response_type);
 
 #endif /* APPLICATIONS_SERIAL_COMMS_SERIALCOMMS_PUBLIC_H_ */

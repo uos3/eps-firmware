@@ -25,7 +25,8 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_TOTAL_LENGTH];
+uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
+uint8_t SERIAL_RX_PACKET_LENGTH;
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
@@ -35,34 +36,56 @@ uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_TOTAL_LENGTH];
 uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
                   uint8_t frame_number_in, uint8_t packet_length_in) {
 
-
     p_packet_in[0] = frame_number_in;
     p_packet_in[SERIAL_COMMAND_ADDRESS] = response_type_in;
     crc_encode(p_packet_in, packet_length_in);
 
     /* Send data */
-    return Uart_send_bytes(p_packet_in, packet_length_in+CRC_LENGTH);
-
+    return Uart_send_bytes(p_packet_in, packet_length_in + CRC_LENGTH);
 }
 
 /* Verify and read the data in the RX buffer */
-uint8_t* Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out, uint8_t *p_length_out) {
+uint8_t* Serial_read_RX(uint8_t *p_frame_number_out,
+                        uint8_t *p_valid_packet_out, uint8_t *p_length_out) {
 
     /* Output frame number used by TOBC */
     *p_frame_number_out = SERIAL_RX_PACKET[0];
 
     /* Check if CRC is valid (0 if valid, 1 if invalid) */
-    *p_valid_packet_out = crc_decode(SERIAL_RX_PACKET, SERIAL_RX_PACKET_TOTAL_LENGTH);
+    *p_valid_packet_out = crc_decode(SERIAL_RX_PACKET,
+                                     SERIAL_RX_PACKET_LENGTH + 2);
 
     /* Output packet length */
-    *p_length_out = SERIAL_RX_DATA_LENGTH;
+    *p_length_out = SERIAL_RX_PACKET_LENGTH;
 
     return SERIAL_RX_PACKET;
 }
 
-
 /* Deal with an RX event by putting the data in the packet buffer */
 uint8_t Serial_process_RX() {
-    /* Fill the SERIAL_RX_PACKET with data and get return value from the driver */
-     return Uart_recv_bytes(SERIAL_RX_PACKET, SERIAL_RX_DATA_LENGTH);
+    Uart_recv_bytes(SERIAL_RX_PACKET, 2);
+    /* Check how long the expected payload length is */
+    switch (SERIAL_RX_PACKET[1]) {
+    case SERIAL_COMMAND_HOUSE_KEEPING:
+        SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_HOUSE_KEEPING;
+        break;
+    case SERIAL_COMMAND_UPDATE_CONFIG:
+        SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_UPDATE_CONFIG;
+        break;
+    case SERIAL_COMMAND_SET_RAIL:
+        SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_SET_RAIL;
+        break;
+    case SERIAL_COMMAND_BATTERY_COMM:
+        SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_BATTERY_COMM;
+        break;
+    case SERIAL_COMMAND_RESET_RAIL:
+        SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_RESET_RAIL;
+        break;
+    default:
+        SERIAL_RX_PACKET_LENGTH = 0;
+    }
+
+    /* Fill the SERIAL_RX_PACKET with the payload and CRC and get return value from the driver */
+    return Uart_recv_bytes(&SERIAL_RX_PACKET[2],
+                           SERIAL_RX_PACKET_LENGTH + CRC_LENGTH);
 }

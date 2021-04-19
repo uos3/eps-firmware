@@ -67,20 +67,4 @@ void HouseKeeping_get_bat_data(uint8_t *p_packet_out) {
     /* Get Daughterboard 1 Heater Status */
     i = Convert_16bit_to_8bit(BatteryComms_TX_RX(0x10, HOUSE_KEEPING_TLM_HBAT1),
                               p_packet_out, i);
-
-    /* Get Daughterboard 2 Temperature */
-    i = Convert_16bit_to_8bit(BatteryComms_TX_RX(0x10, HOUSE_KEEPING_TLM_TBAT2),
-                              p_packet_out, i);
-
-    /* Get Daughterboard 2 Heater Status */
-    i = Convert_16bit_to_8bit(BatteryComms_TX_RX(0x10, HOUSE_KEEPING_TLM_HBAT2),
-                              p_packet_out, i);
-
-    /* Get Daughterboard 3 Temperature */
-    i = Convert_16bit_to_8bit(BatteryComms_TX_RX(0x10, HOUSE_KEEPING_TLM_TBAT3),
-                              p_packet_out, i);
-
-    /* Get Daughterboard 3 Heater Status */
-    i = Convert_16bit_to_8bit(BatteryComms_TX_RX(0x10, HOUSE_KEEPING_TLM_HBAT3),
-                              p_packet_out, i);
 }

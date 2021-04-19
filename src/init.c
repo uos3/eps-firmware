@@ -35,6 +35,7 @@ void init_msp430() {
 
 /* Checks to see what the reason for the startup was and saves in the log file */
 void init_startup() {
+    /* TODO: Read BOR, oscillator faults, and flash memory flags */
     return;
 }
 

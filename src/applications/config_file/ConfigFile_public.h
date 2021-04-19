@@ -26,30 +26,23 @@
 #include "components/flash_editor/FlashEditor_public.h"
 
 /* -------------------------------------------------------------------------
- * GLOBALS
- * ------------------------------------------------------------------------- */
-
-/* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-#define CONFIG_FILE_LENGTH (7)
+#define CONFIG_FILE_LENGTH (3)
 
 /* Address for each config variable */
-#define CONFIG_FILE_OCP (0x00)
-#define CONFIG_FILE_WDT_INTERVAL (0x01)
-#define CONFIG_FILE_WAKE_TIMER (0x03)
-#define CONFIG_FILE_TOBC_TIMER (0x05)
-
-
-/* -------------------------------------------------------------------------
- * STRUCTS
- * ------------------------------------------------------------------------- */
+/* Which rails should remain on after an OCP event */
+#define CONFIG_FILE_RESET_RAIL_AFTER_OCP (0x00)
+/* How long the timer should count for before resetting the TOBC
+ * (divide by 2048 to get value in s)*/
+#define CONFIG_FILE_TOBC_TIMER (0x01)
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-uint8_t ConfigFile_read(uint8_t address, uint8_t *p_data_out);
+uint8_t ConfigFile_read_8bit(uint8_t address, uint8_t *p_data_out);
+uint8_t ConfigFile_read_16bit(uint8_t address, uint16_t *p_data_out);
 uint8_t ConfigFile_write(uint8_t *p_data_in);
 
 

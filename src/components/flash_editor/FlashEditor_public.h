@@ -54,7 +54,7 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-uint8_t FlashEditor_read(uint8_t address_in, uint8_t*p_data_out);
+uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out, uint8_t length_in);
 uint8_t FlashEditor_write(uint8_t address_in, uint8_t*p_data_in);
 
 #endif /* COMPONENTS_FLASH_EDITOR_FLASHEDITOR_PUBLIC_H_ */

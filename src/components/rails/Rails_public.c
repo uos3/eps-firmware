@@ -25,6 +25,14 @@ void Rails_init() {
     P1OUT |= RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
             | RAILS_OCP5_PIN | RAILS_OCP6_PIN;
 
+    /* Set rails to safe mode by
+     * disabling GNSS and LNA (rails 5 and 6) */
+    Rails_set(BIT0, 1);
+    Rails_set(BIT1, 1);
+    Rails_set(BIT2, 1);
+    Rails_set(BIT3, 1);
+    Rails_set(BIT4, 0);
+    Rails_set(BIT5, 0);
 }
 
 /* Add all data available through the multiplexers to the packet */
@@ -61,7 +69,10 @@ uint8_t Rails_get_data(uint8_t *p_packet_out) {
  */
 void Rails_set(uint8_t rail_num_in, uint8_t new_state_in) {
     uint8_t rail = Rails_convert_rail(rail_num_in);
-    if (new_state_in) {
+    /* If we are turning on the rail */
+    if (new_state_in == 1) {
+        /* Set the rail to be on in the global array */
+        RAILS_CURRENT_STATE |= rail_num_in;
         /* Disable pull up resistor */
         P1REN &= ~rail;
         /* Enable interrupt */
@@ -72,6 +83,8 @@ void Rails_set(uint8_t rail_num_in, uint8_t new_state_in) {
         P1IFG &= ~rail;
     }
     else {
+        /* Set the rail to 0 in the global array */
+        RAILS_CURRENT_STATE &= ~rail_num_in;
         /* Disable interrupt */
         P1IE &= ~rail;
         /* Enable pull up resistor */
@@ -85,20 +98,19 @@ void Rails_set(uint8_t rail_num_in, uint8_t new_state_in) {
  */
 uint8_t Rails_convert_rail(uint8_t rail_num_in) {
     switch (rail_num_in) {
-    case BIT1:
+    case BIT0:
         return RAILS_OCP1_PIN;
-    case BIT2:
+    case BIT1:
         return RAILS_OCP2_PIN;
-    case BIT3:
+    case BIT2:
         return RAILS_OCP3_PIN;
-    case BIT4:
+    case BIT3:
         return RAILS_OCP4_PIN;
-    case BIT5:
+    case BIT4:
         return RAILS_OCP5_PIN;
-    case BIT6:
+    case BIT5:
         return RAILS_OCP6_PIN;
     }
     return 0;
 }
-
 
