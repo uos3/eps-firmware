@@ -33,11 +33,9 @@
  * ------------------------------------------------------------------------- */
 /* Max number of tries to read from/send to buffer*/
 #define MAX_TRYS (30)
-/*Error: TX buffer full (last character has not been sent)*/
-#define UART_TX_BUFFER_FULL_MAX_ATTEMPTS_REACHED (0x01)
 
 /*Error: RX buffer empty (has not received a character)*/
-#define UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED (0x02)
+#define UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED (0x01)
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
