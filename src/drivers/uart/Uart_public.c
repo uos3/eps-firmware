@@ -67,18 +67,11 @@ uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
     /*Writes content of p_buffer to TX buffer to be sent over the UART */
     uint8_t i, j;
     for (i = 0; i < length_in; i++) {
-        for (j = 0; j < MAX_TRYS + 1;) {
             /* checks UCA0TXBUF empty */
             if (IFG2 & UCA0TXIFG) {
                 UCA0TXBUF = p_buffer_in[i];
             }
-            else {
-                j++;
-            }
-        }
-        if (j == MAX_TRYS) {
-            return UART_TX_BUFFER_FULL_MAX_ATTEMPTS_REACHED;
-        }
+            p_buffer_in++;
     }
     return 0;
 }
@@ -88,20 +81,13 @@ uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in) {
      * then reads and stores in p_buffer_out*/
     uint8_t i, j;
     for (i = 0; i < length_in; i++) {
-        for (j = 0; j < MAX_TRYS + 1;) {
             if (IFG2 & UCA0RXIFG) {
-                p_buffer_out[i] = UCA0RXBUF;
+                *p_buffer_out = UCA0RXBUF;
                 IFG2 &= ~UCA0RXIFG; /*Clears RX flag */
             }
-            else {
-                j++;
-            }
-        }
-        if (j == MAX_TRYS) {
-            return UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED;
+            p_buffer_out++;
         }
 
-    }
     return 0;
 }
 
