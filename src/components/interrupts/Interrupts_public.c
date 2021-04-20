@@ -61,10 +61,6 @@ void Interrupts_init() {
     /* ---- TOBC Timer (Timer A_1) ---- */
     /* Get timer interval from config */
     ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &interval);
-    /* If it is invalid, set it to default (32s) */
-    if (interval == 0) {
-        interval = 0xFFFF;
-    }
     /* Enable interrupt for when reaching the TA1CCR0 condition */
     TA1CCTL0 = CCIE;
     /* Set length (divide by 2048 for time in s) */

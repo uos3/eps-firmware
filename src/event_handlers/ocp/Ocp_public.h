@@ -26,13 +26,15 @@
 #include "applications/rail_editor/RailEditor_public.h"
 #include "applications/config_file/ConfigFile_public.h"
 #include "applications/log_file/LogFile_public.h"
+
 #include "components/serial/Serial_public.h"
+#include "components/rails/Rails_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-#define OCP_PACKET_SIZE (2)
+#define OCP_PACKET_SIZE (3)
 
 /* -------------------------------------------------------------------------
  * GLOBALS

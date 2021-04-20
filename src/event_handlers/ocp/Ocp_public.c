@@ -27,19 +27,19 @@ int Ocp_event(uint8_t rail_mask) {
 
     /* TODO: decide on how comms packet needs to be formatted */
     /* Include rails with OCP events and what they have been set to */
-    OCP_PACKET[1] = rail_mask;
-    OCP_PACKET[0] = rail_mask & new_rail_status;
+    OCP_PACKET[0] = rail_mask;
+    OCP_PACKET[1] = rail_mask & new_rail_status;
+    OCP_PACKET[2] = RAILS_CURRENT_STATE;
 
-    Serial_TX(&OCP_PACKET[0], SERIAL_RESPONSE_OCP_EVENT,
+    Serial_TX(OCP_PACKET, SERIAL_RESPONSE_OCP_EVENT,
     SERIAL_UNSOLICITED_FRAME_NUM,
               OCP_PACKET_SIZE);
 
     /* For each rail that has tripped, iterate its value in the log */
-    for (i = 5; i == 0; i--) {
+    for (i = 0; i < 6; i++) {
         if ((rail_mask & (1 << i)) != 0) {
             LogFile_write(LOG_FILE_OCP1_ADDR + i);
         }
     }
-
     return 0;
 }

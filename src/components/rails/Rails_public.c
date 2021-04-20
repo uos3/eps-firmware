@@ -21,9 +21,9 @@ void Rails_init() {
     /* Configure OCP pins as inputs */
     P1DIR &= ~(RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
             | RAILS_OCP5_PIN | RAILS_OCP6_PIN);
-    /* Set resistors to pull up if enabled */
-    P1OUT |= RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
-            | RAILS_OCP5_PIN | RAILS_OCP6_PIN;
+    /* Set resistors to pull down if enabled */
+    P1OUT &= ~(RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
+            | RAILS_OCP5_PIN | RAILS_OCP6_PIN);
 
     /* Set rails to safe mode by
      * disabling GNSS and LNA (rails 5 and 6) */

@@ -72,7 +72,7 @@ int main(void) {
                 INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
 
         /* If everything is dealt with and the log has not been modified, go to sleep (in LPM3) with interrupts enabled */
-        if (INTERRUPTS_FLAGS & 0x0F == 0) {
+        if ((INTERRUPTS_FLAGS & 0x0F) == 0) {
             if (LogFile_check_changes()) {
                 LogFile_commit();
             }

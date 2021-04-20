@@ -65,7 +65,7 @@ void Uart_init(void) {
 
 uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
     /*Writes content of p_buffer to TX buffer to be sent over the UART */
-    uint8_t i, j;
+    uint8_t i;
     for (i = 0; i < length_in; i++) {
             /* checks UCA0TXBUF empty */
             if (IFG2 & UCA0TXIFG) {
@@ -79,7 +79,7 @@ uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
 uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in) {
     /* Checks the interrupt flag to see if a character has been received,
      * then reads and stores in p_buffer_out*/
-    uint8_t i, j;
+    uint8_t i;
     for (i = 0; i < length_in; i++) {
             if (IFG2 & UCA0RXIFG) {
                 *p_buffer_out = UCA0RXBUF;
