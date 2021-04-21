@@ -53,6 +53,7 @@ uint8_t ConfigFile_write(uint8_t *p_data_in) {
     /* Tell the flash editor to write the data to the config
      * section of the flash.
      */
+    /* TODO: Add CRC */
     return FlashEditor_write(FLASH_EDITOR_CONFIG_BIT, p_data_in);
 }
 

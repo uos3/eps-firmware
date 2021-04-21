@@ -55,11 +55,11 @@ void Uart_init(void) {
     /*Sets RX as input */
     P3DIR &= ~BIT5;
     /*different pinout for launchpad
-    P1SEL |= BIT1 + BIT2;
-    P1SEL2 |=  BIT1 + BIT2;
-    P1DIR |= BIT2;
-    P1DIR &= ~BIT1;
-    */
+     P1SEL |= BIT1 + BIT2;
+     P1SEL2 |=  BIT1 + BIT2;
+     P1DIR |= BIT2;
+     P1DIR &= ~BIT1;
+     */
 
     /*UCSWRST set back to 0 ready to receive */
     UCA0CTL1 &= ~UCSWRST;
@@ -73,10 +73,10 @@ uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
     /*Writes content of p_buffer to TX buffer to be sent over the UART */
     uint8_t i;
     for (i = 0; i < length_in; i++) {
-            /* checks UCA0TXBUF empty */
-            if (IFG2 & UCA0TXIFG) {
-                UCA0TXBUF = p_buffer_in[i];
-            }
+        /* checks UCA0TXBUF empty */
+        if (IFG2 & UCA0TXIFG) {
+            UCA0TXBUF = p_buffer_in[i];
+        }
     }
     return 0;
 }
@@ -84,20 +84,21 @@ uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
 uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in) {
     /* Checks the interrupt flag to see if a character has been received,
      * then reads and stores in p_buffer_out*/
-    uint8_t i;
+    uint8_t i, j;
     for (i = 0; i < length_in; i++) {
-        for(j = 0; j < MAX_TRYS + 1;) {
+        for (j = 0; j < MAX_TRYS + 1;) {
             if (IFG2 & UCA0RXIFG) {
-                            p_buffer_out[i] = UCA0RXBUF;
-                            break;
-                        } else {
-                            j++
-                        }
+                p_buffer_out[i] = UCA0RXBUF;
+                break;
+            }
+            else {
+                j++;
+            }
         }
-        if(j == MAX_TRYS) {
+        if (j == MAX_TRYS) {
             return UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED;
         }
-        }
+    }
 
     return 0;
 }

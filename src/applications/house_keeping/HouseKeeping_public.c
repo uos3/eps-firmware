@@ -18,20 +18,22 @@
 #include "HouseKeeping_public.h"
 
 int HouseKeeping_get_data(uint8_t *p_packet_out) {
-    /* Get battery status and ADC values (Bytes 0 - 19)*/
+    /* Get battery status and ADC values */
     HouseKeeping_get_bat_data(p_packet_out);
 
     /* Read the temperature sensor and append the data to the packet */
-    Convert_16bit_to_8bit(Adc_convert(ADC_TEMP_SENSOR), p_packet_out, 20);
+    Convert_16bit_to_8bit(Adc_convert(ADC_TEMP_SENSOR), p_packet_out, 22);
 
     /* Get data from each rail (Bytes 22 - 91)*/
-    Rails_get_data(&p_packet_out[22]);
+    Rails_get_data(&p_packet_out[24]);
 
     /* Read the Log File (Bytes 92 - 99)*/
-    LogFile_read(&p_packet_out[92]);
+    LogFile_read(&p_packet_out[96]);
 
     /* Clear log now that it has been read */
     LogFile_clear();
+
+    p_packet_out[104] = RAILS_CURRENT_STATE;
 
     return 0;
 }

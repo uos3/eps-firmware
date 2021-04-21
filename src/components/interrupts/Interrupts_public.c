@@ -47,26 +47,28 @@ void Interrupts_init() {
      *  - setting the interval to 64s to reset (0x01 (WDTIS0) for 4s,
      *  0x10 (WDTIS1) for 64s) */
     /* TODO: decide if this should be used as an EPS reset
-     *  will cause all rails to turn on */
-    WDTCTL = WDTPW | WDTCNTCL | WDTSSEL | WDTIS1;
+     *  will cause all rails to turn on.
+     *  Also, doesn't work (Keeps the mcu from sleeping) */
+//    WDTCTL = WDTPW | WDTCNTCL | WDTSSEL | WDTIS1;
 
     /* ---- Timer for periodical waking up (Timer A_0) ---- */
     /* Enable interrupt for when reaching the TA0CCR0 condition */
     TA0CCTL0 = CCIE;
-    /* Set length to 31s (divide by 2048 for time in s) */
+    /* Set length to 31s (divide by 2048 for time in s,
+     * first interrupt will occur at half time) */
     TA0CCR0 = 0xFFFF;
     /* ACLK, /8 input divider, up/down mode */
-    TA0CTL = TASSEL_1 | ID_1 | ID_0 | MC_1 | MC_0;
+    TA0CTL = TASSEL_1 | ID_3 | MC_3;
 
     /* ---- TOBC Timer (Timer A_1) ---- */
     /* Get timer interval from config */
     ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &interval);
     /* Enable interrupt for when reaching the TA1CCR0 condition */
     TA1CCTL0 = CCIE;
-    /* Set length (divide by 2048 for time in s) */
+    /* Set length (divide by 4096 for time in s) */
     TA1CCR0 = interval;
-    /* ACLK, /8 input divider, up/down mode */
-    TA1CTL = TASSEL_1 | ID_1 | ID_0 | MC_1 | MC_0;
+    /* ACLK, /8 input divider, up mode */
+    TA1CTL = TASSEL_1 | ID_3 | MC_2;
 }
 
 /* Port 1 interrupt service routine (OCP events and TOBC resetting timer) */
@@ -74,39 +76,40 @@ void Interrupts_init() {
 __interrupt void Port_1(void) {
 
     /* OCP Interrupts */
-    if (P1IFG & RAILS_OCP1_PIN != 0) {
+    if ((P1IFG & RAILS_OCP1_PIN) != 0) {
         /* Set custom interrupt flag for OCP event and specific rail
          * and then clear the default interrupt flag */
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP1_FLAG;
         P1IFG &= ~RAILS_OCP1_PIN;
     }
-    if (P1IFG & RAILS_OCP2_PIN != 0) {
+    if ((P1IFG & RAILS_OCP2_PIN) != 0) {
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP2_FLAG;
         P1IFG &= ~RAILS_OCP2_PIN;
     }
-    if (P1IFG & RAILS_OCP3_PIN != 0) {
+    if ((P1IFG & RAILS_OCP3_PIN) != 0) {
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP3_FLAG;
         P1IFG &= ~RAILS_OCP3_PIN;
     }
-    if (P1IFG & RAILS_OCP4_PIN != 0) {
+    if ((P1IFG & RAILS_OCP4_PIN) != 0) {
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP4_FLAG;
         P1IFG &= ~RAILS_OCP4_PIN;
     }
-    if (P1IFG & RAILS_OCP5_PIN != 0) {
+    if ((P1IFG & RAILS_OCP5_PIN) != 0) {
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP5_FLAG;
         P1IFG &= ~RAILS_OCP5_PIN;
     }
-    if (P1IFG & RAILS_OCP6_PIN != 0) {
+    if ((P1IFG & RAILS_OCP6_PIN) != 0) {
         INTERRUPTS_FLAGS |= INTERRUPTS_OCP_FLAG | INTERRUPTS_OCP6_FLAG;
         P1IFG &= ~RAILS_OCP6_PIN;
     }
 
     /* TOBC Pin interrupt */
-    if (P1IFG & INTERRUPTS_TOBC_INT_PIN != 0) {
+    if ((P1IFG & INTERRUPTS_TOBC_INT_PIN) != 0) {
         /* Set custom interrupt flag and clear the default one */
         INTERRUPTS_FLAGS |= INTERRUPTS_TOBC_INT_FLAG;
         P1IFG &= ~INTERRUPTS_TOBC_INT_PIN;
     }
+    P1IFG = 0;
     /* Enable interrupts on wake (bit set status register
      * on exit Global Interrupt Enable) */
     __bis_SR_register_on_exit(GIE);

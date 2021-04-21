@@ -46,7 +46,7 @@ uint16_t Battery_RX() {
 
     /* Only return collected data if no error occurred */
     if (valid_packet_check == 0) {
-        return (BATTERY_PACKET[0] << 8 | BATTERY_PACKET[1]);
+        return ((BATTERY_PACKET[0] << 8) | BATTERY_PACKET[1]);
     }
     else {
         return 0xFFFF;

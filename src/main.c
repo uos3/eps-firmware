@@ -37,39 +37,37 @@ int main(void) {
     while (1) {
 
         /* Reset/kick timers */
-        InterruptManager_reset_timer(
-                INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
+        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
 
         /* For each flag check whether it is active and should be dealt with */
 
         /* Check for UART interrupt */
-        if (INTERRUPTS_FLAGS & INTERRUPTS_UART_FLAG != 0) {
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_UART_FLAG;  // Clear flag
             SerialEvent_event();
         }
 
         /* Check for watchdog timer interrupt */
-        if (INTERRUPTS_FLAGS & INTERRUPTS_WATCHDOG_FLAG != 0) {
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_WATCHDOG_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_WATCHDOG_FLAG;  // Clear flag
-            TobcWatchdog_event();
+//            TobcWatchdog_event();
         }
 
         /* Check for OCP interrupt */
-        if (INTERRUPTS_FLAGS & INTERRUPTS_OCP_FLAG != 0) {
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_OCP_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_OCP_FLAG;  // Clear flag
             uint8_t ocp_status = (INTERRUPTS_FLAGS >> 4) & 0x3F; // Extract bits 5 through 7 from the flags
-            Ocp_event(ocp_status);
+//            Ocp_event(ocp_status);
         }
 
         /* Check for OBC pin interrupt */
-        if (INTERRUPTS_FLAGS & INTERRUPTS_TOBC_INT_FLAG != 0) {
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_TOBC_INT_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_TOBC_INT_FLAG;  // Clear flag
             TobcPin_event();
         }
 
         /* Reset/kick timers */
-        InterruptManager_reset_timer(
-                INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
+//        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
 
         /* If everything is dealt with and the log has not been modified, go to sleep (in LPM3) with interrupts enabled */
         if ((INTERRUPTS_FLAGS & 0x0F) == 0) {

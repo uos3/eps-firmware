@@ -24,7 +24,7 @@
  * ------------------------------------------------------------------------- */
 uint8_t Flash_init(void) {
     /*@brief initialises flash, sets timing generator to 400kHz (8MHz / 20)*/
-    FCTL2 |= FSSEL_2 + FN4 + FN1 + FN0;
+    FCTL2 = FWKEY + FSSEL_2 + FN4 + FN1 + FN0;
     return 0;
 }
 

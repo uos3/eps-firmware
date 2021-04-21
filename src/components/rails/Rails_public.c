@@ -25,6 +25,9 @@ void Rails_init() {
     P1OUT &= ~(RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
             | RAILS_OCP5_PIN | RAILS_OCP6_PIN);
 
+    P1REN &= ~(RAILS_OCP1_PIN | RAILS_OCP2_PIN | RAILS_OCP3_PIN | RAILS_OCP4_PIN
+            | RAILS_OCP5_PIN | RAILS_OCP6_PIN);
+
     /* Set rails to safe mode by
      * disabling GNSS and LNA (rails 5 and 6) */
     Rails_set(BIT0, 1);
@@ -40,9 +43,9 @@ uint8_t Rails_get_data(uint8_t *p_packet_out) {
     uint8_t j, i = 0;
 
     /* Iterate through all 32 MUX1 channels */
-    for (j = 0; j < 32; j++) {
+    for (j = 0; j < 31; j++) {
         /* Avoiding channel 16 which is not connected */
-        if (j == 16) {
+        if (j != 15) {
             /* Select pin on the MUX and only continue if it is successful */
             if (Mux_select(j) == 0) {
                 /* Convert the data and append it to the packet */
@@ -74,11 +77,12 @@ void Rails_set(uint8_t rail_num_in, uint8_t new_state_in) {
         /* Set the rail to be on in the global array */
         RAILS_CURRENT_STATE |= rail_num_in;
         /* Disable pull up resistor */
-        P1REN &= ~rail;
+//        P1REN &= ~rail;
+        P1DIR &= ~rail;
         /* Enable interrupt */
         P1IE |= rail;
-        /* Set interrupt on rising edge */
-        P1IES &= ~rail;
+        /* Set interrupt on falling edge */
+        P1IES |= rail;
         /* Clear interrupt flag */
         P1IFG &= ~rail;
     }
@@ -88,7 +92,10 @@ void Rails_set(uint8_t rail_num_in, uint8_t new_state_in) {
         /* Disable interrupt */
         P1IE &= ~rail;
         /* Enable pull up resistor */
-        P1REN |= rail;
+//        P1REN |= rail;
+        P1DIR |= rail;
+        /* Clear interrupt flag (just in case) */
+        P1IFG &= ~rail;
     }
 
 }

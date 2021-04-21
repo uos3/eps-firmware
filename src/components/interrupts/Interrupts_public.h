@@ -52,7 +52,7 @@ uint16_t INTERRUPTS_FLAGS;
 #define INTERRUPTS_OCP5_FLAG BIT8
 #define INTERRUPTS_OCP6_FLAG BIT9
 
-#define INTERRUPTS_TOBC_INT_PIN BIT3
+#define INTERRUPTS_TOBC_INT_PIN BIT6
 
 /* -------------------------------------------------------------------------
  * STRUCTS
