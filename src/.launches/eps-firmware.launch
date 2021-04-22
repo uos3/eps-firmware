@@ -4,7 +4,7 @@
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROGRAM.MSP430F2132.ccxml.TI MSP430 USB1/MSP430" value="${build_artifact:eps-firmware}"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_PROJECT.MSP430F2132.ccxml.TI MSP430 USB1/MSP430" value="eps-firmware"/>
 <stringAttribute key="com.ti.ccstudio.debug.debugModel.ATTR_TARGET_CONFIG" value="${target_config_active_default:eps-firmware}"/>
-<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP430F2132.ccxml.TI MSP430 USB1/MSP430" value="C:\Users\Roberto\Documents\eps-firmware\src\Debug\eps-firmware.out"/>
+<stringAttribute key="com.ti.ccstudio.debug.debugModel.MRU_PROGRAM.MSP430F2132.ccxml.TI MSP430 USB1/MSP430" value="C:\Users\User\git\eps-firmware\eps-firmware\src\Debug\eps-firmware.out"/>
 <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
 <listEntry value="/eps-firmware"/>
 </listAttribute>

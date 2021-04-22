@@ -53,10 +53,10 @@ void I2c_master_init(void) {
     /*Sets SDA and SCL for launchpad */
     P1SEL |= BIT6 + BIT7;
     P1SEL |= BIT6 + BIT7;
-    P1OUT |= BIT6 + BIT7;
 }
 
-uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_out) {
+uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
+                        uint8_t *p_data_out) {
     int i;
     int err = 0;
     uint16_t masterrxindex;
@@ -65,11 +65,11 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *
     /*Set into receive mode and send the start */
     UCB0CTL1 &= ~UCTR;
     UCB0CTL1 |= UCTXSTT;
-    for(i = 0; i < 100;) {
-        if(UCB0CTL1 & UCTXSTT) {
+    for (i = 0; i < 100;) {
+        if (UCB0CTL1 & UCTXSTT) {
             i++;
-    }
-        if(i == 100) {
+        }
+        if (i == 100) {
             return ERROR_START_NOT_RECEIVED;
         }
     }
@@ -80,25 +80,25 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *
     /*Check for ACK*/
     err = I2c_check_ack(slaveaddress_in);
 
-    if(bytecount_in > 1) {
+    if (bytecount_in > 1) {
         masterrxindex = bytecount_in;
-        for(i = masterrxindex; i > 0; i --) {
-            if(err == 0) {
+        for (i = masterrxindex; i > 0; i--) {
+            if (err == 0) {
                 /*Checks to see if data to receive */
-                for(i = 0; i < 100;) {
-                    if(IFG2 & UCB0RXIFG == 0) {
+                for (i = 0; i < 100;) {
+                    if (IFG2 & UCB0RXIFG == 0) {
                         i++;
                     }
                     else {
                         break;
                     }
                 }
-                if(i == 100) {
+                if (i == 100) {
                     return ERROR_NO_DATA_TO_RECEIVE;
                 }
                 *p_data_out = UCB0RXBUF;
                 p_data_out++;
-                if(masterrxindex == 1) {
+                if (masterrxindex == 1) {
                     UCB0CTL1 |= UCTXSTP;
                 }
 
@@ -108,9 +108,9 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *
     return err;
 }
 
-
-uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_in) {
-    int err, i = 0;
+uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in,
+                         uint8_t *p_data_in) {
+    int err = 0;
     mastertxdata = p_data_in;
     uint16_t mastertxindex;
     /*Set slave address*/
@@ -118,23 +118,25 @@ uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t 
     /*Send the start condition and put in transmit mode*/
     UCB0CTL1 |= UCTR + UCTXSTT;
     /*Wait for start to be sent and ready to transmit*/
-    for(i = 0; i < 100;) {
-        if((IFG2 & UCB0TXIFG) == 0) {
-            i++;
-    }
-        if(i == 100) {
-            return ERROR_START_NOT_RECEIVED;
+    while((UCB0CTL1 & UCTXSTT) && ((IFG2 & UCB0TXIFG) == 0));
+   /* for (i = 0; i < 100; i++) {
+        if ((IFG2 & UCB0TXIFG) == 0) {
         }
     }
+    if (i == 100) {
+        return ERROR_START_NOT_RECEIVED;
+    }
+    */
     /*Check for ACK*/
     err = I2c_check_ack(slaveaddress_in);
     /*Enable TX interrupt */
-    if(err == 0) {
-        for(mastertxindex = bytecount_in; mastertxindex > 0; mastertxindex--) {
+    if (err == 0) {
+        for (mastertxindex = bytecount_in; mastertxindex > 0; mastertxindex--) {
             if (mastertxindex == 1) {
                 UCB0TXBUF = *mastertxdata;
                 UCB0CTL1 |= UCTXSTP;
-            } else {
+            }
+            else {
                 UCB0TXBUF = *mastertxdata;
                 mastertxdata++;
             }
@@ -144,7 +146,6 @@ uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t 
     return err;
 
 }
-
 
 static int I2c_check_ack(uint8_t slaveaddress_in) {
     /*This function checks for ack, if it receives nack stops transaction clears IFG and returns -1*/
@@ -157,6 +158,4 @@ static int I2c_check_ack(uint8_t slaveaddress_in) {
     }
     return err;
 }
-
-
 

@@ -86,7 +86,7 @@
 /* Failed CRC on RX packet */
 #define SERIAL_RESPONSE_CORRUPTED_DATA (137)
 
-#define SERIAL_TX_HOUSEKEEPING_LENGTH (105)
+#define SERIAL_TX_HOUSEKEEPING_LENGTH (106)
 
 /* Define TX packet lengths */
 #define SERIAL_HEADER_LENGTH (2)
