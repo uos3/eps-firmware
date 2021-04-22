@@ -35,7 +35,6 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 void Adc_init(void);
-void Adc_start_conversion(uint16_t channel_in);
 uint16_t Adc_convert(uint16_t channel_in);
 
 

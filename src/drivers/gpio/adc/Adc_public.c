@@ -27,7 +27,7 @@ void Adc_init(void){
     ADC10CTL0 &= ~ENC;
     /* Sets Vref as Vcc, Sample and hold time 64x ADC10CLKs, Decreases reference buffer
      * capability to reduce current, reference output on, reference buffer only on during sample
-     * and conversion, 2.5V, enables ADC and enables interrupt  */
+     * and conversion enables ADC  */
     ADC10CTL0 |= SREF_0 + REFBURST + ADC10SHT_3 + REFON + ADC10ON;
     ADC10CTL1 = ADC10DIV_3;
 }
