@@ -14,34 +14,78 @@
 
 #include "FlashEditor_public.h"
 
-uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out, uint8_t length_in) {
+uint8_t FLASH_EDITOR_STORED_DATA[LOG_FILE_LENGTH + CRC_LENGTH];
+
+uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
+                         uint8_t length_in) {
+    uint8_t i;
     /* Check if the bit identifying that the address is for the config is set */
     if ((address_in & FLASH_EDITOR_CONFIG_BIT) == FLASH_EDITOR_CONFIG_BIT) {
-        /* Remove config identifier bit */
-        address_in &= ~FLASH_EDITOR_CONFIG_BIT;
-        /* If we are asking for the OCP rail config (only 1 Byte)*/
-        if (address_in == 0) {
-            Flash_read(FLASH_EDITOR_CONFIG_ADDRESS, 1, p_data_out);
+        /* read the stored crc */
+        Flash_read(FLASH_EDITOR_CONFIG_ADDRESS, CONFIG_FILE_LENGTH + CRC_LENGTH,
+                   FLASH_EDITOR_STORED_DATA);
+        /* Check if CRC is passed */
+        if (crc_decode(FLASH_EDITOR_STORED_DATA,
+        CONFIG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
+            /* Remove config identifier bit */
+            address_in &= ~FLASH_EDITOR_CONFIG_BIT;
+            /* If we are asking for the ocp_reset byte */
+            if (address_in == 0) {
+                p_data_out[0] = FLASH_EDITOR_STORED_DATA[0];
+            }
+            /* If not, return the TOBC timer length */
+            else {
+                p_data_out[0] = FLASH_EDITOR_STORED_DATA[1];
+                p_data_out[1] = FLASH_EDITOR_STORED_DATA[2];
+            }
         }
         else {
-            /* Rest of data is 2 Bytes */
-            address_in += FLASH_EDITOR_CONFIG_ADDRESS;
-            Flash_read(address_in, 2, p_data_out);
+            /* If CRC has failed, fill the data with 1 and return an error */
+            for (i = 0; i < length_in; i++) {
+                p_data_out[i] = 0xFF;
+
+            }
+            /* TODO: deal with error */
+            return 1;
         }
     }
     /* Else it is a request for log data */
     else {
-        Flash_read(FLASH_EDITOR_LOG_ADDRESS, LOG_FILE_LENGTH, p_data_out);
+        Flash_read(FLASH_EDITOR_LOG_ADDRESS, LOG_FILE_LENGTH + CRC_LENGTH,
+                   FLASH_EDITOR_STORED_DATA);
+        /* Check if CRC is passed */
+        if (crc_decode(FLASH_EDITOR_STORED_DATA,
+        CONFIG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
+            /* If we are asking for the ocp_reset byte */
+            p_data_out[0] = FLASH_EDITOR_STORED_DATA[address_in];
+        }
+        /* If CRC has failed, fill the data with 1 and return an error */
+        else {
+            for (i = 0; i < length_in; i++) {
+                p_data_out[i] = 0xFF;
+
+            }
+            /* TODO: deal with error */
+            return 1;
+        }
     }
     return 0;
 }
 
-uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in) {
+uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
+                          uint8_t length_in) {
+    uint8_t i;
+    for (i = 0; i < length_in; i++) {
+        FLASH_EDITOR_STORED_DATA[i] = p_data_in[i];
+    }
+    crc_encode(FLASH_EDITOR_STORED_DATA, length_in);
     if (address_in == FLASH_EDITOR_CONFIG_BIT) {
-        Flash_write(FLASH_EDITOR_CONFIG_ADDRESS, CONFIG_FILE_LENGTH, p_data_in);
+        Flash_write(FLASH_EDITOR_CONFIG_ADDRESS, length_in + CRC_LENGTH,
+                    FLASH_EDITOR_STORED_DATA);
     }
     else {
-        Flash_write(FLASH_EDITOR_LOG_ADDRESS, LOG_FILE_LENGTH, p_data_in);
+        Flash_write(FLASH_EDITOR_LOG_ADDRESS, length_in + CRC_LENGTH,
+                    FLASH_EDITOR_STORED_DATA);
     }
     return 0;
 }

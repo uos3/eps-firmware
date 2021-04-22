@@ -50,14 +50,14 @@ int main(void) {
         /* Check for watchdog timer interrupt */
         if ((INTERRUPTS_FLAGS & INTERRUPTS_WATCHDOG_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_WATCHDOG_FLAG;  // Clear flag
-//            TobcWatchdog_event();
+            TobcWatchdog_event();
         }
 
         /* Check for OCP interrupt */
         if ((INTERRUPTS_FLAGS & INTERRUPTS_OCP_FLAG) != 0) {
             INTERRUPTS_FLAGS &= ~INTERRUPTS_OCP_FLAG;  // Clear flag
             uint8_t ocp_status = (INTERRUPTS_FLAGS >> 4) & 0x3F; // Extract bits 5 through 7 from the flags
-//            Ocp_event(ocp_status);
+            Ocp_event(ocp_status);
         }
 
         /* Check for OBC pin interrupt */

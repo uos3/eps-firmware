@@ -24,6 +24,7 @@
 
 /* Internal */
 #include "components/flash_editor/FlashEditor_public.h"
+#include "util/crc/Crc_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
