@@ -41,7 +41,7 @@ void I2c_master_init(void) {
     /*UCMST sets master mode, UCMODE_3 sets I2c mode and UCSYNC sets as synchronous (I2C)*/
     UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;
     /*Sets clock source, mode and keeps UCSWRST high*/
-    UCB0CTL1 = UCSSEL2 + UCSWRST;
+    UCB0CTL1 = UCSSEL_2 + UCSWRST;
     /*1MHz/10 = 100kHz, standard for I2C*/
     UCB0BR0 = 10;
     UCB0BR1 = 0;
@@ -59,6 +59,7 @@ void I2c_master_init(void) {
 uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_out) {
     int i;
     int err = 0;
+    uint16_t masterrxindex;
     /*Set the slave address */
     UCB0I2CSA = slaveaddress_in;
     /*Set into receive mode and send the start */
@@ -158,20 +159,4 @@ static int I2c_check_ack(uint8_t slaveaddress_in) {
 }
 
 
-#pragma vector = USCIAB0TX_VECTOR
-__interrupt void USCIAB0TX_ISR(void)
-{
-    /*If I2C TX*/
- if (IFG2 & UCB0TXIFG) {
-     /*Loop through sending one character at a time*/
-     if (mastertxindex) {
-         UCB0TXBUF = *mastertxdata;
-         mastertxdata++;
-         mastertxindex--;
-     } else {
-         /*When all sent stop and disable TX interrupt*/
-         UCB0CTL1 |= UCTXSTP;
-         IE2 &= ~UCB0TXIE;
-     }
- }
-}
+
