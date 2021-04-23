@@ -1,20 +1,23 @@
+#include "msp430x21x2.h"
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdint.h>
-#include <msp430.h>
-
 #include "drivers/i2c/I2c_public.h"
 
+uint8_t TxData[1];
 
-int main(void) {
-    /*Stop watchdog*/
-    WDTCTL = WDTPW + WDTHOLD; // Stop WDT
-    /*Calibrate clock for 1MHz*/
-    DCOCTL = 0;
-    BCSCTL1 = CALBC1_1MHZ;
-    DCOCTL = CALDCO_1MHZ;
-    uint8_t test[1];
-    test[0] = 0x45;
-    I2c_master_init();
-    I2c_master_write(0x09, 1, test);
-    while(1);
+void main(void)
+{
+  WDTCTL = WDTPW + WDTHOLD;
+  TxData[0] = 0x00;// Stop WDT
+  I2c_master_init(0x8);
+  I2c_master_write(0x8, 1, TxData);// Enable TX interrupt
+
+
+  while (1)
+  {           // I2C TX, start condition
+    __bis_SR_register(CPUOFF + GIE);        // Enter LPM0 w/ interrupts
+                                            // Remain in LPM0 until all data
+                                            // is TX'd
+  }
 }

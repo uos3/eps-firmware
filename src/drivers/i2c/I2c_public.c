@@ -35,9 +35,10 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-void I2c_master_init(void) {
+void I2c_master_init(uint8_t slaveaddress_in) {
+    P3SEL |= 0x06;
     /*Sets USCI registers while UCSWRST = 1*/
-    UCB0CTL1 = UCSWRST;
+    UCB0CTL1 |= UCSWRST;
     /*UCMST sets master mode, UCMODE_3 sets I2c mode and UCSYNC sets as synchronous (I2C)*/
     UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;
     /*Sets clock source, mode and keeps UCSWRST high*/
@@ -46,13 +47,9 @@ void I2c_master_init(void) {
     UCB0BR0 = 10;
     UCB0BR1 = 0;
     /*Sets UCSWRST = 0 ready to go*/
+    UCB0I2CSA = slaveaddress_in;
     UCB0CTL1 &= ~UCSWRST;
     /* Configures P3.1 and P3.2 as SDA and SCL*/
-    /*P3SEL |= BIT1 + BIT2;
-     * P3OUT |= BIT1 + BIT2;*/
-    /*Sets SDA and SCL for launchpad */
-    P1SEL |= BIT6 + BIT7;
-    P1SEL |= BIT6 + BIT7;
 }
 
 uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
@@ -60,8 +57,6 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
     int i;
     int err = 0;
     uint16_t masterrxindex;
-    /*Set the slave address */
-    UCB0I2CSA = slaveaddress_in;
     /*Set into receive mode and send the start */
     UCB0CTL1 &= ~UCTR;
     UCB0CTL1 |= UCTXSTT;
@@ -108,43 +103,13 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
     return err;
 }
 
-uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in,
-                         uint8_t *p_data_in) {
-    int err = 0;
-    mastertxdata = p_data_in;
-    uint16_t mastertxindex;
-    /*Set slave address*/
-    UCB0I2CSA = slaveaddress_in;
-    /*Send the start condition and put in transmit mode*/
-    UCB0CTL1 |= UCTR + UCTXSTT;
-    /*Wait for start to be sent and ready to transmit*/
-    while((UCB0CTL1 & UCTXSTT) && ((IFG2 & UCB0TXIFG) == 0));
-   /* for (i = 0; i < 100; i++) {
-        if ((IFG2 & UCB0TXIFG) == 0) {
-        }
-    }
-    if (i == 100) {
-        return ERROR_START_NOT_RECEIVED;
-    }
-    */
-    /*Check for ACK*/
-    err = I2c_check_ack(slaveaddress_in);
-    /*Enable TX interrupt */
-    if (err == 0) {
-        for (mastertxindex = bytecount_in; mastertxindex > 0; mastertxindex--) {
-            if (mastertxindex == 1) {
-                UCB0TXBUF = *mastertxdata;
-                UCB0CTL1 |= UCTXSTP;
-            }
-            else {
-                UCB0TXBUF = *mastertxdata;
-                mastertxdata++;
-            }
-        }
-    }
-    UCB0CTL1 |= UCTXSTT;
-    return err;
 
+uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_in) {
+    mastertxindex = bytecount_in;
+    mastertxdata = p_data_in;
+    UCB0CTL1 |= UCTR + UCTXSTT;
+    IE2 |= UCB0TXIE;
+    return 0;
 }
 
 static int I2c_check_ack(uint8_t slaveaddress_in) {
@@ -159,3 +124,19 @@ static int I2c_check_ack(uint8_t slaveaddress_in) {
     return err;
 }
 
+#pragma vector = USCIAB0TX_VECTOR
+__interrupt void USCIAB0TX_ISR(void)
+{
+  if (mastertxindex)                            // Check TX byte counter
+  {
+    UCB0TXBUF = *mastertxdata;                 // Load TX buffer
+    mastertxdata++;
+    mastertxindex--;                            // Decrement TX byte counter
+  }
+  else
+  {
+    UCB0CTL1 |= UCTXSTP;                    // I2C stop condition
+    IFG2 &= ~UCB0TXIFG;                     // Clear USCI_B0 TX int flag
+    __bic_SR_register_on_exit(CPUOFF);      // Exit LPM0
+  }
+}
