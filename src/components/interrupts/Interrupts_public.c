@@ -53,7 +53,7 @@ void Interrupts_init() {
 
     /* ---- Timer for periodical waking up (Timer A_0) ---- */
     /* Enable interrupt for when reaching the TA0CCR0 condition */
-    TA0CCTL0 = CCIE;
+//    TA0CCTL0 = CCIE;
     /* Set length to 31s (divide by 2048 for time in s,
      * first interrupt will occur at half time) */
     TA0CCR0 = 0xFFFF;
@@ -64,7 +64,7 @@ void Interrupts_init() {
     /* Get timer interval from config */
     ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &interval);
     /* Enable interrupt for when reaching the TA1CCR0 condition */
-    TA1CCTL0 = CCIE;
+//    TA1CCTL0 = CCIE;
     /* Set length (divide by 4096 for time in s) */
     TA1CCR0 = interval;
     /* ACLK, /8 input divider, up mode */
@@ -143,3 +143,4 @@ __interrupt void USCI0RX_ISR(void) {
     __bis_SR_register_on_exit(GIE);
     __bic_SR_register_on_exit(LPM3_bits);
 }
+

@@ -29,6 +29,8 @@
 #include "applications/house_keeping/HouseKeeping_public.h"
 #include "applications/battery_comms/BatteryComms_public.h"
 
+#include "util/crc/Crc_public.h"
+
 /* -------------------------------------------------------------------------
  * DEFINES
  * ------------------------------------------------------------------------- */
@@ -37,6 +39,7 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
+uint8_t SERIAL_COMMS_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
 uint8_t SERIAL_COMMS_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
 
 /* -------------------------------------------------------------------------

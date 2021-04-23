@@ -38,15 +38,15 @@
 
 /* Possible commands received from TOBC */
 /* Get all house keeping data */
-#define SERIAL_COMMAND_HOUSE_KEEPING (0)
+#define SERIAL_COMMAND_HOUSE_KEEPING (1)
 /* Change the values in the config to the ones in the data packet */
-#define SERIAL_COMMAND_UPDATE_CONFIG (1)
+#define SERIAL_COMMAND_UPDATE_CONFIG (2)
 /* Set the state of the OCP rails */
-#define SERIAL_COMMAND_SET_RAIL (2)
+#define SERIAL_COMMAND_SET_RAIL (3)
 /* Pass on a command to the battery */
-#define SERIAL_COMMAND_BATTERY_COMM (3)
+#define SERIAL_COMMAND_BATTERY_COMM (4)
 /* Set an OCP rail to OFF then ON */
-#define SERIAL_COMMAND_RESET_RAIL (4)
+#define SERIAL_COMMAND_RESET_RAIL (5)
 
 /* Payload size for each command received from TOBC */
 /* Get all house keeping data */
@@ -91,8 +91,8 @@
 
 uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
                   uint8_t frame_number_in, uint8_t packet_length_in);
-uint8_t* Serial_read_RX(uint8_t *p_frame_number_out,
-                        uint8_t *p_valid_packet_out, uint8_t *p_length_out);
+uint8_t Serial_read_RX(uint8_t *p_frame_number_out,
+                        uint8_t *p_valid_packet_out, uint8_t *p_length_out, uint8_t *p_data_out);
 uint8_t Serial_process_RX();
 
 #endif /* COMPONENTS_SERIAL_SERIAL_PUBLIC_H_ */

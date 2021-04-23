@@ -19,11 +19,10 @@ int SerialComms_process() {
     uint8_t valid_packet = 0;
     uint8_t response = 0;
     uint8_t frame_number = 0;
-    /* Pointer to the packet that has been received */
-    uint8_t *p_packet_rx;
 
     /* Get received data */
-    p_packet_rx = Serial_read_RX(&frame_number, &valid_packet, &length);
+    Serial_read_RX(&frame_number, &valid_packet, &length,
+                   SERIAL_COMMS_RX_PACKET);
 
     /* Check if data was received */
     if (length == 0) {
@@ -36,7 +35,7 @@ int SerialComms_process() {
     }
 
     /* Check if CRC was passed TODO: add to ICD*/
-    if (valid_packet == 0) {
+    if (valid_packet == CRC_ERROR_DETECTED) {
 //        /* Set type of response in header */
 //        SerialComms_add_header(SERIAL_COMMS_PACKET,
 //        SERIAL_RESPONSE_CORRUPTED_DATA);
@@ -46,19 +45,19 @@ int SerialComms_process() {
     }
 
     /* Go through responses for each command that could be received */
-    switch (p_packet_rx[SERIAL_COMMAND_ADDRESS]) {
+    switch (SERIAL_COMMS_RX_PACKET[SERIAL_COMMAND_ADDRESS]) {
 
     /* ----- TOBC commands to update the config file ----- */
     case SERIAL_COMMAND_UPDATE_CONFIG: {
         /* Write data from the packet to the config */
-        ConfigFile_write(&p_packet_rx[SERIAL_HEADER_LENGTH]);
+        ConfigFile_write(&SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
 
         response = SERIAL_RESPONSE_UPDATE_CONFIG;
 
         /* Add written data to the data portion of the TX packet */
         uint8_t i;
         for (i = SERIAL_HEADER_LENGTH; i < length; i++) {
-            SERIAL_COMMS_PACKET[i] = p_packet_rx[i];
+            SERIAL_COMMS_PACKET[i] = SERIAL_COMMS_RX_PACKET[i];
         }
         break;
     }
@@ -66,8 +65,8 @@ int SerialComms_process() {
         /* ----- TOBC commands setting rails ----- */
     case SERIAL_COMMAND_SET_RAIL: {
         /* Set required rail to given status */
-        RailEditor_set_rails(p_packet_rx[SERIAL_HEADER_LENGTH],
-                             p_packet_rx[SERIAL_HEADER_LENGTH + 1]);
+        RailEditor_set_rails(SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH],
+                             SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 1]);
 
         /* Set TX packet header */
         response = SERIAL_RESPONSE_SET_RAIL;
@@ -81,8 +80,8 @@ int SerialComms_process() {
         /* ----- TOBC commands turning a rail off then on ----- */
     case SERIAL_COMMAND_RESET_RAIL: {
         /* Turn given rails off then on */
-        RailEditor_set_rails(p_packet_rx[SERIAL_HEADER_LENGTH], 0);
-        RailEditor_set_rails(p_packet_rx[SERIAL_HEADER_LENGTH], 1);
+        RailEditor_set_rails(SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH], 0);
+        RailEditor_set_rails(SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH], 1);
 
         response = SERIAL_RESPONSE_SET_RAIL;
 
@@ -97,10 +96,12 @@ int SerialComms_process() {
         response = SERIAL_RESPONSE_BATTERY_COMM;
 
         /* Create a 1 byte command and 2 byte battery input data value */
-        uint8_t battery_command = p_packet_rx[SERIAL_HEADER_LENGTH];
+        uint8_t battery_command = SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH];
         uint16_t battery_input_data =
-                ((uint16_t) p_packet_rx[SERIAL_HEADER_LENGTH + 1]) << 8;
-        battery_input_data |= (uint16_t) p_packet_rx[SERIAL_HEADER_LENGTH + 2];
+                ((uint16_t) SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 1])
+                        << 8;
+        battery_input_data |=
+                (uint16_t) SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 2];
 
         /* Send command to battery and get response */
         uint16_t battery_response = BatteryComms_TX_RX(battery_command,

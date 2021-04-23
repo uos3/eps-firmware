@@ -26,6 +26,7 @@
  * ------------------------------------------------------------------------- */
 
 uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
+//uint8_t expected_crc[SERIAL_RX_PACKET_MAX_LENGTH];
 uint8_t SERIAL_RX_PACKET_LENGTH;
 
 /* -------------------------------------------------------------------------
@@ -45,20 +46,31 @@ uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
 }
 
 /* Verify and read the data in the RX buffer */
-uint8_t* Serial_read_RX(uint8_t *p_frame_number_out,
-                        uint8_t *p_valid_packet_out, uint8_t *p_length_out) {
-
+uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
+                       uint8_t *p_length_out, uint8_t *p_data_out) {
+    uint8_t i;
     /* Output frame number used by TOBC */
     *p_frame_number_out = SERIAL_RX_PACKET[0];
 
     /* Check if CRC is valid (0 if valid, 1 if invalid) */
-    *p_valid_packet_out = crc_decode(SERIAL_RX_PACKET,
-                                     SERIAL_RX_PACKET_LENGTH + 2);
+    *p_valid_packet_out = crc_decode(
+            SERIAL_RX_PACKET,
+            SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH + 2);
+
+//    for (i = 0; i < SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH; i++) {
+//        expected_crc[i] = SERIAL_RX_PACKET[i];
+//    }
+
+//    crc_encode(expected_crc, SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH);
 
     /* Output packet length */
     *p_length_out = SERIAL_RX_PACKET_LENGTH;
 
-    return SERIAL_RX_PACKET;
+    for (i = 0; i < SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH; i++) {
+        p_data_out[i] = SERIAL_RX_PACKET[i];
+    }
+
+    return 0;
 }
 
 /* Deal with an RX event by putting the data in the packet buffer */
@@ -82,6 +94,7 @@ uint8_t Serial_process_RX() {
         SERIAL_RX_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_RESET_RAIL;
         break;
     default:
+        /* TODO: deal with invalid command */
         SERIAL_RX_PACKET_LENGTH = 0;
     }
 

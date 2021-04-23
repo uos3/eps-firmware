@@ -25,8 +25,4 @@
 /* Internal */
 #include "applications/config_file/ConfigFile_public.h"
 
-/* -------------------------------------------------------------------------
- * FUNCTIONS
- * ------------------------------------------------------------------------- */
-
 #endif /* TOOLS_CONFIG_FILE_APP_TEST_CONFIGFILE_APP_TEST_H_ */
