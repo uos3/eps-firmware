@@ -47,7 +47,6 @@ void Uart_init(void) {
 //    UCA0BR0 = (8000000 / 56000UL) & 0xFF;
 //    UCA0BR1 = ((8000000 / 56000UL) >> 8) & 0xFF;
 //    UCA0MCTL = 0x0E;
-
     /* Baud rate to 56000 for 1MHZ DCO clock speed */
     UCA0BR0 = (1000000 / 56000UL) & 0xFF;
     UCA0BR1 = ((1000000 / 56000UL) >> 8) & 0xFF;
@@ -76,11 +75,17 @@ void Uart_init(void) {
 
 uint8_t Uart_send_bytes(uint8_t *p_buffer_in, uint8_t length_in) {
     /*Writes content of p_buffer to TX buffer to be sent over the UART */
-    uint8_t i;
+    uint8_t i, j;
     for (i = 0; i < length_in; i++) {
-        /* checks UCA0TXBUF empty */
-        if (IFG2 & UCA0TXIFG) {
-            UCA0TXBUF = p_buffer_in[i];
+        for (j = 0; j < MAX_TRYS + 1; j++) {
+            /* checks UCA0TXBUF empty */
+            if (IFG2 & UCA0TXIFG) {
+                UCA0TXBUF = p_buffer_in[i];
+                break;
+            }
+        }
+        if (j == MAX_TRYS) {
+            return UART_RX_BUFFER_EMPTY_MAX_ATTEMPTS_REACHED;
         }
     }
     return 0;
@@ -91,13 +96,10 @@ uint8_t Uart_recv_bytes(uint8_t *p_buffer_out, uint8_t length_in) {
      * then reads and stores in p_buffer_out*/
     uint8_t i, j;
     for (i = 0; i < length_in; i++) {
-        for (j = 0; j < MAX_TRYS + 1;) {
+        for (j = 0; j < MAX_TRYS + 1;j++) {
             if (IFG2 & UCA0RXIFG) {
                 p_buffer_out[i] = UCA0RXBUF;
                 break;
-            }
-            else {
-                j++;
             }
         }
         if (j == MAX_TRYS) {
