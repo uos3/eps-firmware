@@ -35,11 +35,12 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 /*Buffer to store data received*/
-uint8_t *masterrxdata;
+uint8_t masterrxdata[128];
 /*Buffer to store data to transmit*/
 uint8_t *mastertxdata;
 
 uint8_t mastertxindex;
+uint8_t masterrxindex;
 
 
 /* -------------------------------------------------------------------------

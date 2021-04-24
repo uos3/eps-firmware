@@ -54,31 +54,19 @@ void I2c_master_init(uint8_t slaveaddress_in) {
 
 uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
                         uint8_t *p_data_out) {
-    int i;
-    int err = 0;
-    uint16_t masterrxindex;
+    int i, err;
     /*Set into receive mode and send the start */
     UCB0CTL1 &= ~UCTR;
     UCB0CTL1 |= UCTXSTT;
-    for (i = 0; i < 100;) {
-        if (UCB0CTL1 & UCTXSTT) {
-            i++;
-        }
-        if (i == 100) {
-            return ERROR_START_NOT_RECEIVED;
-        }
-    }
-    /*If there is only one byte to receive, the stop bit should be set immediately */
-    if (bytecount_in == 1) {
+    masterrxindex = bytecount_in;
+    if (masterrxindex == 1) {
         UCB0CTL1 |= UCTXSTP;
     }
-    /*Check for ACK*/
     err = I2c_check_ack(slaveaddress_in);
+    if (err == 0) {
 
-    if (bytecount_in > 1) {
-        masterrxindex = bytecount_in;
-        for (i = masterrxindex; i > 0; i--) {
-            if (err == 0) {
+        if (masterrxindex > 0) {
+            for (i = 0; i < masterrxindex; i++) {
                 /*Checks to see if data to receive */
                 for (i = 0; i < 100;) {
                     if (IFG2 & UCB0RXIFG == 0) {
@@ -96,15 +84,15 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in,
                 if (masterrxindex == 1) {
                     UCB0CTL1 |= UCTXSTP;
                 }
-
             }
         }
     }
-    return err;
+    /*If there is only one byte to receive, the stop bit should be set immediately */
+    return 0;
 }
 
-
-uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_in) {
+uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in,
+                         uint8_t *p_data_in) {
     mastertxindex = bytecount_in;
     mastertxdata = p_data_in;
     UCB0CTL1 |= UCTR + UCTXSTT;
@@ -125,18 +113,17 @@ static int I2c_check_ack(uint8_t slaveaddress_in) {
 }
 
 #pragma vector = USCIAB0TX_VECTOR
-__interrupt void USCIAB0TX_ISR(void)
-{
-  if (mastertxindex)                            // Check TX byte counter
-  {
-    UCB0TXBUF = *mastertxdata;                 // Load TX buffer
-    mastertxdata++;
-    mastertxindex--;                            // Decrement TX byte counter
-  }
-  else
-  {
-    UCB0CTL1 |= UCTXSTP;                    // I2C stop condition
-    IFG2 &= ~UCB0TXIFG;                     // Clear USCI_B0 TX int flag
-    __bic_SR_register_on_exit(CPUOFF);      // Exit LPM0
-  }
+__interrupt void USCIAB0TX_ISR(void) {
+    if (mastertxindex)                            // Check TX byte counter
+    {
+        UCB0TXBUF = *mastertxdata;                 // Load TX buffer
+        mastertxdata++;
+        mastertxindex--;                 // Decrement TX byte counter
+    }
+    else {
+        UCB0CTL1 |= UCTXSTP;                   // I2C stop condition
+        IFG2 &= ~UCB0TXIFG;
+        __bic_SR_register_on_exit(CPUOFF);                   // Exit LPM0
+    }
 }
+
