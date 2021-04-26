@@ -42,7 +42,10 @@ uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
     crc_encode(p_packet_in, packet_length_in);
 
     /* Send data */
-    return Uart_send_bytes(p_packet_in, packet_length_in + CRC_LENGTH);
+    uint8_t volatile return_value = Uart_send_bytes(
+            p_packet_in, packet_length_in + CRC_LENGTH);
+    __no_operation();
+    return return_value;
 }
 
 /* Verify and read the data in the RX buffer */
@@ -64,7 +67,7 @@ uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
 //    crc_encode(expected_crc, SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH);
 
     /* Output packet length */
-    *p_length_out = SERIAL_RX_PACKET_LENGTH;
+    *p_length_out = SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH;
 
     for (i = 0; i < SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH; i++) {
         p_data_out[i] = SERIAL_RX_PACKET[i];

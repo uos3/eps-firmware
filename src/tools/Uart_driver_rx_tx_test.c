@@ -31,16 +31,16 @@ void main(void) {
 //   P1OUT &= 0x00;
     /*Enable RX Interrupt*/
     IE2 |= UCA0RXIE;
-    tx_pack[0] = 0x63;
-    tx_pack[1] = 0x61;
-    tx_pack[2] = 0x72;
+    tx_pack[0] = 0x45;
+    tx_pack[1] = 0x50;
+    tx_pack[2] = 0x53;
 //   p_test_buffer_in = &test;
     Uart_init();
     /*Sends the test byte*/
     Uart_send_bytes(tx_pack, 3);
     while (1) {
-        /*Enter LPM0 until interrupt*/
-    __bis_SR_register(CPUOFF + GIE);
+        /*Enter LPM3 until interrupt*/
+    __bis_SR_register(LPM3_bits | GIE);
     }
 }
 

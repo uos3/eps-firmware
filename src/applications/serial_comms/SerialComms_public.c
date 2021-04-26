@@ -17,7 +17,7 @@ int SerialComms_process() {
     uint8_t length = 0;
     /* 0 if packet failed CRC */
     uint8_t valid_packet = 0;
-    uint8_t response = 0;
+    uint8_t volatile response = 0;
     uint8_t frame_number = 0;
 
     /* Get received data */
@@ -54,12 +54,17 @@ int SerialComms_process() {
 
         response = SERIAL_RESPONSE_UPDATE_CONFIG;
 
+        /*TODO: Read from config */
+        ConfigFile_read_8bit(CONFIG_FILE_RESET_RAIL_AFTER_OCP, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH]);
+        ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+1]);
+        ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER+1, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+2]);
+
         /* Add written data to the data portion of the TX packet */
-        uint8_t i;
-        for (i = SERIAL_HEADER_LENGTH; i < length; i++) {
-            SERIAL_COMMS_PACKET[i] = SERIAL_COMMS_RX_PACKET[i];
-        }
-        break;
+//        uint8_t i;
+//        for (i = SERIAL_HEADER_LENGTH; i < length; i++) {
+//            SERIAL_COMMS_PACKET[i] = SERIAL_COMMS_RX_PACKET[i];
+//        }
+//        break;
     }
 
         /* ----- TOBC commands setting rails ----- */
@@ -138,6 +143,7 @@ int SerialComms_process() {
         return 3;
     }
     }
+    __no_operation();
     /* Send compiled packet and return the status */
     return Serial_TX(SERIAL_COMMS_PACKET, response, frame_number, length);
 }
