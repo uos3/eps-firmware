@@ -41,7 +41,7 @@ uint16_t Battery_RX() {
     uint8_t valid_packet_check;
     /* Get data from the I2C bus and store any error codes */
     valid_packet_check = I2c_master_read(BATTERY_I2C_ADDR,
-    BATTERY_RX_PACKET_LENGTH,
+                                         BATTERY_RX_PACKET_LENGTH,
                                          BATTERY_PACKET);
 
     /* Only return collected data if no error occurred */

@@ -57,9 +57,13 @@
 #define SERIAL_PAYLOAD_SIZE_BATTERY_COMM (3)
 /* Set an OCP rail to OFF then ON */
 #define SERIAL_PAYLOAD_SIZE_RESET_RAIL (1)
-
+/* Data type is not recognised */
 #define SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND (1)
-#define SERIAL_PAYLOAD_SIZE_NO_DATA (0)
+/* Header length is not 2 */
+#define SERIAL_PAYLOAD_SIZE_INVALID_HEADER (0)
+/* Packet length is 0 */
+#define SERIAL_PAYLOAD_SIZE_INVALID_LENGTH (0)
+/* Failed CRC on RX packet */
 #define SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA (0)
 
 /* Possible responses EPS can send to the TOBC */
@@ -74,10 +78,14 @@
 /* Return battery response */
 #define SERIAL_RESPONSE_OCP_EVENT (133)
 
-/* TODO: add to ICD */
+/* Data type is not recognised */
 #define SERIAL_RESPONSE_UNRECOGNISED_COMMAND (134)
-#define SERIAL_RESPONSE_NO_DATA (135)
-#define SERIAL_RESPONSE_CORRUPTED_DATA (136)
+/* Header length is not 2 */
+#define SERIAL_RESPONSE_INVALID_HEADER (135)
+/* */
+#define SERIAL_RESPONSE_INVALID_LENGTH (136)
+/* Failed CRC on RX packet */
+#define SERIAL_RESPONSE_CORRUPTED_DATA (137)
 
 
 /* Define TX packet lengths */
