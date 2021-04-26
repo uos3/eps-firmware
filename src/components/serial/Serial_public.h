@@ -33,9 +33,6 @@
 /* Frame number for sending a packet that is unsolicited by the TOBC */
 #define SERIAL_UNSOLICITED_FRAME_NUM (0)
 
-/* Position in packet for the byte containing the command */
-#define SERIAL_COMMAND_ADDRESS (1)
-
 /* Possible commands received from TOBC */
 /* Get all house keeping data */
 #define SERIAL_COMMAND_HOUSE_KEEPING (1)

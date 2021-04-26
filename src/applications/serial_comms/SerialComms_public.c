@@ -45,26 +45,23 @@ int SerialComms_process() {
     }
 
     /* Go through responses for each command that could be received */
-    switch (SERIAL_COMMS_RX_PACKET[SERIAL_COMMAND_ADDRESS]) {
+    switch (SERIAL_COMMS_RX_PACKET[1]) {
 
     /* ----- TOBC commands to update the config file ----- */
     case SERIAL_COMMAND_UPDATE_CONFIG: {
         /* Write data from the packet to the config */
         ConfigFile_write(&SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
 
-        response = SERIAL_RESPONSE_UPDATE_CONFIG;
-
-        /*TODO: Read from config */
+        /* Read from config */
         ConfigFile_read_8bit(CONFIG_FILE_RESET_RAIL_AFTER_OCP, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH]);
         ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+1]);
         ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER+1, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+2]);
 
-        /* Add written data to the data portion of the TX packet */
-//        uint8_t i;
-//        for (i = SERIAL_HEADER_LENGTH; i < length; i++) {
-//            SERIAL_COMMS_PACKET[i] = SERIAL_COMMS_RX_PACKET[i];
-//        }
-//        break;
+        uint16_t tobc_timer;
+        ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &tobc_timer);
+
+        response = SERIAL_RESPONSE_UPDATE_CONFIG;
+        break;
     }
 
         /* ----- TOBC commands setting rails ----- */
@@ -101,8 +98,8 @@ int SerialComms_process() {
         response = SERIAL_RESPONSE_BATTERY_COMM;
 
         /* Create a 1 byte command and 2 byte battery input data value */
-        uint8_t battery_command = SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH];
-        uint16_t battery_input_data =
+        uint8_t volatile battery_command = SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH];
+        uint16_t volatile battery_input_data =
                 ((uint16_t) SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 1])
                         << 8;
         battery_input_data |=

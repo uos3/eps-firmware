@@ -37,8 +37,9 @@ uint8_t SERIAL_RX_PACKET_LENGTH;
 uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
                   uint8_t frame_number_in, uint8_t packet_length_in) {
 
+    /* Prepare Header */
     p_packet_in[0] = frame_number_in;
-    p_packet_in[SERIAL_COMMAND_ADDRESS] = response_type_in;
+    p_packet_in[1] = response_type_in;
     crc_encode(p_packet_in, packet_length_in);
 
     /* Send data */
