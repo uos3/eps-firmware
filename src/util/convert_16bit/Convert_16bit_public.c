@@ -12,14 +12,13 @@
 
 #include "util/convert_16bit/Convert_16bit_public.h"
 
-/* Add the ADC data the output packet so that the Most Significant Byte
- * of the 2 byte ADC value is first */
+/* Add the ADC data the output packet in big endian */
 uint8_t Convert_16bit_to_8bit(uint16_t data_in, uint8_t *p_packet_out,
                               uint8_t array_index_inout) {
     /* Add Most Significant Byte to the index and iterate it */
-    p_packet_out[array_index_inout++] = (uint8_t) data_in >> 8;
-    /* Add Least Significant Byte to the index and iterate it */
     p_packet_out[array_index_inout++] = (uint8_t) data_in;
+    /* Add Least Significant Byte to the index and iterate it */
+    p_packet_out[array_index_inout++] = (uint8_t) (data_in >> 8);
     /* Return the original index + 2 */
     return array_index_inout;
 }

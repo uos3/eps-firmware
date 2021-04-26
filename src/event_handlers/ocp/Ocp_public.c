@@ -25,11 +25,9 @@ int Ocp_event(uint8_t rail_mask) {
     /* Set the rails that have OCPed to whatever they should be */
     RailEditor_set_rails(rail_mask, new_rail_status);
 
-    /* TODO: decide on how comms packet needs to be formatted */
     /* Include rails with OCP events and what they have been set to */
     OCP_PACKET[0] = rail_mask;
-    OCP_PACKET[1] = rail_mask & new_rail_status;
-    OCP_PACKET[2] = RAILS_CURRENT_STATE;
+    OCP_PACKET[1] = RAILS_CURRENT_STATE;
 
     Serial_TX(OCP_PACKET, SERIAL_RESPONSE_OCP_EVENT,
     SERIAL_UNSOLICITED_FRAME_NUM,

@@ -30,6 +30,7 @@
 #include "applications/battery_comms/BatteryComms_public.h"
 
 #include "util/crc/Crc_public.h"
+#include "util/convert_16bit/Convert_16bit_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES

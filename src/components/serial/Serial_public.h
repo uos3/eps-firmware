@@ -23,6 +23,7 @@
 #include <stdint.h>
 
 /* Internal */
+#include "applications/house_keeping/HouseKeeping_public.h"
 #include "drivers/uart/Uart_public.h"
 #include "util/crc/Crc_public.h"
 
@@ -57,6 +58,10 @@
 /* Set an OCP rail to OFF then ON */
 #define SERIAL_PAYLOAD_SIZE_RESET_RAIL (1)
 
+#define SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND (1)
+#define SERIAL_PAYLOAD_SIZE_NO_DATA (0)
+#define SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA (0)
+
 /* Possible responses EPS can send to the TOBC */
 /* Return house keeping data */
 #define SERIAL_RESPONSE_HOUSE_KEEPING (129)
@@ -70,14 +75,14 @@
 #define SERIAL_RESPONSE_OCP_EVENT (133)
 
 /* TODO: add to ICD */
-//#define SERIAL_RESPONSE_NO_DATA (0x05)
-//#define SERIAL_RESPONSE_CORRUPTED_DATA (0x06)
-//#define SERIAL_RESPONSE_UNRECOGNISED_COMMAND (0x07)
+#define SERIAL_RESPONSE_UNRECOGNISED_COMMAND (134)
+#define SERIAL_RESPONSE_NO_DATA (135)
+#define SERIAL_RESPONSE_CORRUPTED_DATA (136)
+
 
 /* Define TX packet lengths */
 #define SERIAL_HEADER_LENGTH (2)
-#define SERIAL_PAYLOAD_LENGTH (128)
-#define SERIAL_TX_PACKET_TOTAL_LENGTH (SERIAL_HEADER_LENGTH + SERIAL_PAYLOAD_LENGTH + CRC_LENGTH)
+#define SERIAL_TX_PACKET_TOTAL_LENGTH (SERIAL_HEADER_LENGTH + HOUSE_KEEPING_DATA_LENGTH + CRC_LENGTH)
 
 /* Length of RX Header + Payload + CRC */
 #define SERIAL_RX_PACKET_MAX_LENGTH (7)

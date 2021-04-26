@@ -26,21 +26,16 @@ int SerialComms_process() {
 
     /* Check if data was received */
     if (length == 0) {
-//        /* Set type of response in header */
-//        SerialComms_add_header(SERIAL_COMMS_PACKET,
-//        SERIAL_RESPONSE_NO_DATA);
-//        /* Send packet which is just a header */
-//        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_HEADER_LENGTH);
+        /* Return an error if the packet was empty */
+        length = SERIAL_PAYLOAD_SIZE_NO_DATA + SERIAL_HEADER_LENGTH;
+        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_NO_DATA, SERIAL_UNSOLICITED_FRAME_NUM, length);
         return 1;
     }
 
-    /* Check if CRC was passed TODO: add to ICD*/
+    /* Check if CRC was passed */
     if (valid_packet == CRC_ERROR_DETECTED) {
-//        /* Set type of response in header */
-//        SerialComms_add_header(SERIAL_COMMS_PACKET,
-//        SERIAL_RESPONSE_CORRUPTED_DATA);
-//        /* Send packet which is just a header */
-//        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_HEADER_LENGTH);
+        length = SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA + SERIAL_HEADER_LENGTH;
+        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_CORRUPTED_DATA, SERIAL_UNSOLICITED_FRAME_NUM, length);
         return 2;
     }
 
@@ -52,14 +47,18 @@ int SerialComms_process() {
         /* Write data from the packet to the config */
         ConfigFile_write(&SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
 
-        /* Read from config */
-        ConfigFile_read_8bit(CONFIG_FILE_RESET_RAIL_AFTER_OCP, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH]);
-        ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+1]);
-        ConfigFile_read_8bit(CONFIG_FILE_TOBC_TIMER+1, &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH+2]);
+        /* Read the OCP states from the config */
+        ConfigFile_read_8bit(CONFIG_FILE_RESET_RAIL_AFTER_OCP,
+                             &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH]);
 
+        /* Read the TOBC timer from the config */
         uint16_t tobc_timer;
         ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &tobc_timer);
+        Convert_16bit_to_8bit(tobc_timer,
+                              &SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH],
+                              1);
 
+        /* Set the response data type to updated config */
         response = SERIAL_RESPONSE_UPDATE_CONFIG;
         break;
     }
@@ -67,8 +66,8 @@ int SerialComms_process() {
         /* ----- TOBC commands setting rails ----- */
     case SERIAL_COMMAND_SET_RAIL: {
         /* Set required rail to given status */
-        RailEditor_set_rails(SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH],
-                             SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 1]);
+        RailEditor_set_rails(0xFF,
+                             SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
 
         /* Set TX packet header */
         response = SERIAL_RESPONSE_SET_RAIL;
@@ -98,7 +97,8 @@ int SerialComms_process() {
         response = SERIAL_RESPONSE_BATTERY_COMM;
 
         /* Create a 1 byte command and 2 byte battery input data value */
-        uint8_t volatile battery_command = SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH];
+        uint8_t volatile battery_command =
+                SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH];
         uint16_t volatile battery_input_data =
                 ((uint16_t) SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH + 1])
                         << 8;
@@ -133,10 +133,10 @@ int SerialComms_process() {
 
         /* ----- Unrecognised command ----- */
     default: {
-        /* TODO: add to ICD */
-//        SerialComms_add_header(SERIAL_COMMS_PACKET,
-//        SERIAL_RESPONSE_UNRECOGNISED_COMMAND);
-//        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_HEADER_LENGTH);
+        /* Set the packet to be the command */
+        SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] = SERIAL_COMMS_RX_PACKET[1];
+        length = SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND + SERIAL_HEADER_LENGTH;
+        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_UNRECOGNISED_COMMAND, SERIAL_UNSOLICITED_FRAME_NUM, length);
         return 3;
     }
     }

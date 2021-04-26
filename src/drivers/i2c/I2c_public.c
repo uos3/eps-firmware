@@ -145,20 +145,20 @@ static int I2c_check_ack(uint8_t slaveaddress_in) {
 }
 
 
-//#pragma vector = USCIAB0TX_VECTOR
-//__interrupt void USCIAB0TX_ISR(void)
-//{
-//    /*If I2C TX*/
-// if (IFG2 & UCB0TXIFG) {
-//     /*Loop through sending one character at a time*/
-//     if (mastertxindex) {
-//         UCB0TXBUF = *mastertxdata;
-//         mastertxdata++;
-//         mastertxindex--;
-//     } else {
-//         /*When all sent stop and disable TX interrupt*/
-//         UCB0CTL1 |= UCTXSTP;
-//         IE2 &= ~UCB0TXIE;
-//     }
-// }
-//}
+#pragma vector = USCIAB0TX_VECTOR
+__interrupt void USCIAB0TX_ISR(void)
+{
+    /*If I2C TX*/
+ if (IFG2 & UCB0TXIFG) {
+     /*Loop through sending one character at a time*/
+     if (mastertxindex) {
+         UCB0TXBUF = *mastertxdata;
+         mastertxdata++;
+         mastertxindex--;
+     } else {
+         /*When all sent stop and disable TX interrupt*/
+         UCB0CTL1 |= UCTXSTP;
+         IE2 &= ~UCB0TXIE;
+     }
+ }
+}
