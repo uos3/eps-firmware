@@ -65,6 +65,8 @@
 #define SERIAL_PAYLOAD_SIZE_INVALID_LENGTH (0)
 /* Failed CRC on RX packet */
 #define SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA (0)
+/* Failed CRC on flash read */
+#define SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL (0)
 
 /* Possible responses EPS can send to the TOBC */
 /* Return house keeping data */
@@ -86,7 +88,8 @@
 #define SERIAL_RESPONSE_INVALID_LENGTH (136)
 /* Failed CRC on RX packet */
 #define SERIAL_RESPONSE_CORRUPTED_DATA (137)
-
+/* Failed CRC on flash read */
+#define SERIAL_RESPONSE_FLASH_READ_FAIL (137)
 
 /* Define TX packet lengths */
 #define SERIAL_HEADER_LENGTH (2)
@@ -94,6 +97,12 @@
 
 /* Length of RX Header + Payload + CRC */
 #define SERIAL_RX_PACKET_MAX_LENGTH (7)
+
+/* -------------------------------------------------------------------------
+ * GLobals
+ * ------------------------------------------------------------------------- */
+
+uint8_t SERIAL_TX_PACKET[SERIAL_HEADER_LENGTH + 1 + CRC_LENGTH];
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

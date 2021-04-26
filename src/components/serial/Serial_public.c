@@ -27,7 +27,7 @@
 
 uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
 uint8_t SERIAL_RX_PACKET_LENGTH;
-uint8_t SERIAL_TX_PACKET[SERIAL_HEADER_LENGTH + 1 + CRC_LENGTH];
+
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS

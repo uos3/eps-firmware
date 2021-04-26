@@ -26,6 +26,7 @@
 /* Internal */
 #include "applications/config_file/ConfigFile_public.h"
 #include "applications/log_file/LogFile_public.h"
+#include "components/serial/Serial_public.h"
 #include "drivers/flash/Flash_public.h"
 
 /* -------------------------------------------------------------------------

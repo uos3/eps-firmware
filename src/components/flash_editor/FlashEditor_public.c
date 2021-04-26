@@ -45,7 +45,10 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                 p_data_out[i] = 0xFF;
 
             }
-            /* TODO: deal with error */
+            /* Tell TOBC That reading has failed */
+            Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
+                      SERIAL_UNSOLICITED_FRAME_NUM,
+                      SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
             return 1;
         }
     }
@@ -65,7 +68,10 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                 p_data_out[i] = 0xFF;
 
             }
-            /* TODO: deal with error */
+            /* Tell TOBC That reading has failed */
+            Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
+                      SERIAL_UNSOLICITED_FRAME_NUM,
+                      SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
             return 1;
         }
     }
