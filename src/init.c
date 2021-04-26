@@ -33,14 +33,7 @@ void init_msp430() {
     DCOCTL = CALDCO_1MHZ;
 }
 
-/* Checks to see what the reason for the startup was and saves in the log file */
-void init_startup() {
-    /* TODO: Read BOR, oscillator faults, and flash memory flags */
-//    IFG1 = 0;
-//    IFG2 = 0;
-//    ACCVIFG;
-    return;
-}
+
 
 /* Loops through each driver to initialise it */
 void init_drivers() {
@@ -59,6 +52,13 @@ void init_components() {
 /* Loops through each application to initialise it */
 void init_applications() {
     LogFile_init();
+}
+
+/* Checks to see what the reason for the startup was and saves in the log file */
+void init_startup() {
+    /* TODO: Read BOR, oscillator faults, and flash memory flags? */
+    LogFile_write(LOG_FILE_BOOT_COUNT_ADDR);
+    return;
 }
 
 /* Setup the interrupts */

@@ -89,7 +89,7 @@
 /* Failed CRC on RX packet */
 #define SERIAL_RESPONSE_CORRUPTED_DATA (137)
 /* Failed CRC on flash read */
-#define SERIAL_RESPONSE_FLASH_READ_FAIL (137)
+#define SERIAL_RESPONSE_FLASH_READ_FAIL (138)
 
 /* Define TX packet lengths */
 #define SERIAL_HEADER_LENGTH (2)

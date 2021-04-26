@@ -27,6 +27,7 @@
 
 /* Internal includes */
 #include "components/flash_editor/FlashEditor_public.h"
+#include "util/crc/Crc_public.h"
 
 /* -------------------------------------------------------------------------
  * DEFINES
@@ -52,7 +53,7 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint8_t LOG_FILE_CACHE [LOG_FILE_LENGTH];
+uint8_t LOG_FILE_CACHE [LOG_FILE_LENGTH+CRC_LENGTH];
 
 /* -------------------------------------------------------------------------
  * STRUCTS

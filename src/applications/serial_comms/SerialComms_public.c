@@ -28,7 +28,7 @@ int SerialComms_process() {
     if (valid_packet == CRC_ERROR_DETECTED) {
         /* If not, tell the TOBC */
         length = SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA + SERIAL_HEADER_LENGTH;
-        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_CORRUPTED_DATA, SERIAL_UNSOLICITED_FRAME_NUM, length);
+        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_CORRUPTED_DATA, frame_number, length);
         return 1;
     }
 
@@ -129,11 +129,12 @@ int SerialComms_process() {
         /* Set the packet to be the command */
         SERIAL_COMMS_PACKET[SERIAL_HEADER_LENGTH] = SERIAL_COMMS_RX_PACKET[1];
         length = SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND + SERIAL_HEADER_LENGTH;
-        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_UNRECOGNISED_COMMAND, SERIAL_UNSOLICITED_FRAME_NUM, length);
+        Serial_TX(SERIAL_COMMS_PACKET, SERIAL_RESPONSE_UNRECOGNISED_COMMAND, frame_number, length);
         return 2;
     }
     }
     __no_operation();
+
     /* Send compiled packet and return the status */
     return Serial_TX(SERIAL_COMMS_PACKET, response, frame_number, length);
 }

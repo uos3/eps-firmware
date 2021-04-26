@@ -42,9 +42,11 @@ uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
     p_packet_in[1] = response_type_in;
     crc_encode(p_packet_in, packet_length_in);
 
+    Uart_send_bytes(p_packet_in, 2);
+    __delay_cycles(500000);
     /* Send data */
     uint8_t volatile return_value = Uart_send_bytes(
-            p_packet_in, packet_length_in + CRC_LENGTH);
+            p_packet_in+2, packet_length_in);
     __no_operation();
     return return_value;
 }
@@ -82,7 +84,7 @@ uint8_t Serial_process_RX() {
     /* Get the header and ensure it is the right length */
     if (Uart_recv_bytes(SERIAL_RX_PACKET, 2) != 0) {
         Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_INVALID_HEADER,
-                  SERIAL_UNSOLICITED_FRAME_NUM,
+                  SERIAL_RX_PACKET[0],
                   SERIAL_PAYLOAD_SIZE_INVALID_HEADER + SERIAL_HEADER_LENGTH);
         return 1;
     }
@@ -109,7 +111,7 @@ uint8_t Serial_process_RX() {
         Serial_TX(
                 SERIAL_TX_PACKET,
                 SERIAL_RESPONSE_UNRECOGNISED_COMMAND,
-                SERIAL_UNSOLICITED_FRAME_NUM,
+                SERIAL_RX_PACKET[0],
                 SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND + SERIAL_HEADER_LENGTH);
         SERIAL_RX_PACKET_LENGTH = 0;
         return 2;
@@ -120,8 +122,9 @@ uint8_t Serial_process_RX() {
     if( Uart_recv_bytes(&SERIAL_RX_PACKET[2],
                            SERIAL_RX_PACKET_LENGTH + CRC_LENGTH)!=0){
         Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_INVALID_LENGTH,
-                  SERIAL_UNSOLICITED_FRAME_NUM,
+                  SERIAL_RX_PACKET[0],
                   SERIAL_PAYLOAD_SIZE_INVALID_LENGTH + SERIAL_HEADER_LENGTH);
+        return 3;
     }
     return 0;
 }

@@ -40,7 +40,7 @@ uint16_t INTERRUPTS_FLAGS;
  * ------------------------------------------------------------------------- */
 
 #define INTERRUPTS_UART_FLAG BIT0
-#define INTERRUPTS_WATCHDOG_FLAG BIT1
+#define INTERRUPTS_TOBC_TIMER_FLAG BIT1
 #define INTERRUPTS_TOBC_INT_FLAG BIT2
 #define INTERRUPTS_OCP_FLAG BIT3
 

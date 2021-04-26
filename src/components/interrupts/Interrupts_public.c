@@ -48,13 +48,14 @@ void Interrupts_init() {
      *  0x10 (WDTIS1) for 64s) */
     /* TODO: decide if this should be used as an EPS reset
      *  will cause all rails to turn on.
-     *  Also, doesn't work (Keeps the mcu from sleeping) */
+     * TODO: Fix (currently Keeps the mcu from sleeping and also stops
+     *  flash write from working */
 //    WDTCTL = WDTPW | WDTCNTCL | WDTSSEL | WDTIS1;
 
     /* ---- Timer for periodical waking up (Timer A_0) ---- */
     /* Enable interrupt for when reaching the TA0CCR0 condition */
 //    TA0CCTL0 = CCIE;
-    /* Set length to 31s (divide by 2048 for time in s,
+    /* Set length to ~31s (divide by 2048 for time in s,
      * first interrupt will occur at half time) */
     TA0CCR0 = 0xFFFF;
     /* ACLK, /8 input divider, up/down mode */
@@ -65,7 +66,7 @@ void Interrupts_init() {
     ConfigFile_read_16bit(CONFIG_FILE_TOBC_TIMER, &interval);
     /* Enable interrupt for when reaching the TA1CCR0 condition */
 //    TA1CCTL0 = CCIE;
-    /* Set length (divide by 4096 for time in s) */
+    /* Set length (default ~15s) (divide by 4096 for time in s) */
     TA1CCR0 = interval;
     /* ACLK, /8 input divider, up mode */
     TA1CTL = TASSEL_1 | ID_3 | MC_2;
@@ -129,7 +130,7 @@ __interrupt void Timer_A_CCR0_ISR(void) {
  * the custom flag and then waking up */
 #pragma vector = TIMER1_A0_VECTOR
 __interrupt void Timer_A_CCR1_ISR(void) {
-    INTERRUPTS_FLAGS |= INTERRUPTS_WATCHDOG_FLAG;
+    INTERRUPTS_FLAGS |= INTERRUPTS_TOBC_TIMER_FLAG;
     __bis_SR_register_on_exit(GIE);
     __bic_SR_register_on_exit(LPM3_bits);
 }
@@ -138,9 +139,10 @@ __interrupt void Timer_A_CCR1_ISR(void) {
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void) {
     /* Collect arriving data into the buffer */
-    Serial_process_RX();
-    INTERRUPTS_FLAGS |= INTERRUPTS_UART_FLAG;
-    __bis_SR_register_on_exit(GIE);
-    __bic_SR_register_on_exit(LPM3_bits);
+    if (Serial_process_RX() == 0) {
+        INTERRUPTS_FLAGS |= INTERRUPTS_UART_FLAG;
+        __bis_SR_register_on_exit(GIE);
+        __bic_SR_register_on_exit(LPM3_bits);
+    }
 }
 

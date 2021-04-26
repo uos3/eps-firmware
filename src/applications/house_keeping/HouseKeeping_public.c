@@ -18,6 +18,12 @@
 #include "HouseKeeping_public.h"
 
 int HouseKeeping_get_data(uint8_t *p_packet_out) {
+    /* Debugging */
+//    uint8_t i;
+//    for(i=0;i<105;i++){
+//        p_packet_out[i]=i;
+//    }
+
     /* Get battery status and ADC values */
     HouseKeeping_get_bat_data(p_packet_out);
 

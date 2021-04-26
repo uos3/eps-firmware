@@ -47,9 +47,9 @@ int main(void) {
             SerialEvent_event();
         }
 
-        /* Check for watchdog timer interrupt */
-        if ((INTERRUPTS_FLAGS & INTERRUPTS_WATCHDOG_FLAG) != 0) {
-            INTERRUPTS_FLAGS &= ~INTERRUPTS_WATCHDOG_FLAG;  // Clear flag
+        /* Check for interrupt from timer acting as TOBC watchdog */
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_TOBC_TIMER_FLAG) != 0) {
+            INTERRUPTS_FLAGS &= ~INTERRUPTS_TOBC_TIMER_FLAG;  // Clear flag
             TobcWatchdog_event();
         }
 

@@ -24,13 +24,21 @@ void LogFile_init() {
 
 /* Increments value at address by one  and then the value is returned */
 uint8_t LogFile_write(uint8_t address_in) {
-    return ++LOG_FILE_CACHE[address_in];
+    /* Check for overflow */
+    if (LOG_FILE_CACHE[address_in] == 0xFF) {
+        return LOG_FILE_CACHE[address_in];
+    }
+    /* If it's fine then iterate and return */
+    else {
+        return ++LOG_FILE_CACHE[address_in];
+    }
+
 }
 
 /* Output all the values in the cache and the flash through the given pointer */
 void LogFile_read(uint8_t *p_packet_out) {
     uint8_t i;
-    FlashEditor_read(FLASH_EDITOR_LOG_BIT, p_packet_out,LOG_FILE_LENGTH);
+    FlashEditor_read(FLASH_EDITOR_LOG_BIT, p_packet_out, LOG_FILE_LENGTH);
     for (i = LOG_FILE_LENGTH; i != 0; i--) {
         p_packet_out[i - 1u] += LOG_FILE_CACHE[i - 1u];
     }

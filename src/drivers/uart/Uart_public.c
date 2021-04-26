@@ -52,6 +52,10 @@ void Uart_init(void) {
     UCA0BR1 = ((1000000 / 56000UL) >> 8) & 0xFF;
     UCA0MCTL = 0x0E;
 
+//    UCA0BR0 = (1000000 / 9600UL) & 0xFF;
+//    UCA0BR1 = ((1000000 / 9600UL) >> 8) & 0xFF;
+//    UCA0MCTL = UCBRS0;
+
     /*Sets pins for RX (3.5) and TX(3.4)*/
     P3SEL |= BIT4 | BIT5;
     /*Sets TX as output */

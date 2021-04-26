@@ -46,9 +46,10 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
 
             }
             /* Tell TOBC That reading has failed */
-            Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
-                      SERIAL_UNSOLICITED_FRAME_NUM,
-                      SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
+            Serial_TX(
+                    SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
+                    SERIAL_UNSOLICITED_FRAME_NUM,
+                    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
             return 1;
         }
     }
@@ -58,7 +59,7 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                    FLASH_EDITOR_STORED_DATA);
         /* Check if CRC is passed */
         if (crc_decode(FLASH_EDITOR_STORED_DATA,
-        CONFIG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
+                       LOG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
             /* If we are asking for the ocp_reset byte */
             p_data_out[0] = FLASH_EDITOR_STORED_DATA[address_in];
         }
@@ -69,9 +70,10 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
 
             }
             /* Tell TOBC That reading has failed */
-            Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
-                      SERIAL_UNSOLICITED_FRAME_NUM,
-                      SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
+            Serial_TX(
+                    SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
+                    SERIAL_UNSOLICITED_FRAME_NUM,
+                    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
             return 1;
         }
     }
