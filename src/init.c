@@ -47,6 +47,7 @@ void init_drivers() {
 /* Loops through each component to initialise it */
 void init_components() {
     Rails_init();
+    Serial_init();
 }
 
 /* Loops through each application to initialise it */

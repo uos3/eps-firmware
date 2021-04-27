@@ -65,9 +65,9 @@ uint8_t LOG_FILE_CACHE [LOG_FILE_LENGTH+CRC_LENGTH];
 
 void LogFile_init();
 uint8_t LogFile_write(uint8_t address_in);
-void LogFile_read(uint8_t* p_packet_out);
+uint8_t LogFile_read(uint8_t* p_packet_out);
 void LogFile_commit();
-uint8_t LogFile_clear();
+void LogFile_clear();
 uint8_t LogFile_check_changes();
 
 

@@ -17,28 +17,12 @@ uint8_t SERIAL_COMMS_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
 void SerialComms_continue(uint8_t valid_continue_in) {
     /* If the continue byte has not been corrupted */
     if (valid_continue_in == SERIAL_COMMS_VALID_CONTINUE) {
-        /* If the continue is for an unsolicited packet */
-        if (SERIAL_RX_PACKET[0] == 0) {
-            Serial_TX_unsolicited_payload();
-        }
-        /* Else it's for a nominal packet */
-        else {
-            Serial_TX_nominal_payload();
-        }
+        Serial_TX_nominal_payload();
     }
     else {
-        if (SERIAL_RX_PACKET[0] == 0) {
-            /* Create an invalid CRC so that the OBC knows that the
-             * continue failed */
-            Crc_generate_invalid(SERIAL_TX_UNSOLICITED_PACKET,
-                                 SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
-            Serial_TX_unsolicited_payload();
-        }
-        else {
-            Crc_generate_invalid(SERIAL_TX_NOMINAL_PACKET,
-                                 SERIAL_TX_NOMINAL_PACKET_LENGTH);
-            Serial_TX_nominal_payload();
-        }
+        Crc_generate_invalid(SERIAL_TX_NOMINAL_PACKET,
+                             SERIAL_TX_NOMINAL_PACKET_LENGTH);
+        Serial_TX_nominal_payload();
     }
 }
 
@@ -69,7 +53,7 @@ void SerialComms_prepare_packet() {
         /* ----- TOBC commands to update the config file ----- */
         case SERIAL_COMMAND_UPDATE_CONFIG: {
             /* Write data from the packet to the config */
-            ConfigFile_write (&SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
+            ConfigFile_write(&SERIAL_COMMS_RX_PACKET[SERIAL_HEADER_LENGTH]);
 
             /* Read the OCP states from the config */
             ConfigFile_read_8bit(

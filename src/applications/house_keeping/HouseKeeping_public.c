@@ -23,23 +23,22 @@ int HouseKeeping_get_data(uint8_t *p_packet_out) {
 //    for(i=0;i<105;i++){
 //        p_packet_out[i]=i;
 //    }
-
     /* Get battery status and ADC values */
     HouseKeeping_get_bat_data(p_packet_out);
 
     /* Read the temperature sensor and append the data to the packet */
     Convert_16bit_to_8bit(Adc_convert(ADC_TEMP_SENSOR), p_packet_out, 22);
 
-    /* Get data from each rail (Bytes 22 - 91)*/
+    /* Get data from each rail (Bytes 24 - 95)*/
     Rails_get_data(&p_packet_out[24]);
 
-    /* Read the Log File (Bytes 92 - 99)*/
-    LogFile_read(&p_packet_out[96]);
+    /* Read the Log File (Bytes 96 - 104)  and whether it is valid */
+    p_packet_out[96] = LogFile_read(&p_packet_out[97]);
 
     /* Clear log now that it has been read */
     LogFile_clear();
 
-    p_packet_out[104] = RAILS_CURRENT_STATE;
+    p_packet_out[105] = RAILS_CURRENT_STATE;
 
     return 0;
 }

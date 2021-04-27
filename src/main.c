@@ -80,7 +80,7 @@ int main(void) {
         }
 
         /* Reset/kick timers */
-//        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
+        InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
 
         /* If everything is dealt with and the log has not been modified, go to sleep (in LPM3) with interrupts enabled */
         if ((INTERRUPTS_FLAGS & 0x0F) == 0) {

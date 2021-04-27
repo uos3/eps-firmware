@@ -17,6 +17,8 @@
 
 #include "LogFile_public.h"
 
+uint8_t LOG_FILE_SAVED_FILE[LOG_FILE_LENGTH];
+
 /* Set all the values in the cache to 0 */
 void LogFile_init() {
     memset(LOG_FILE_CACHE, 0, LOG_FILE_LENGTH);
@@ -36,25 +38,31 @@ uint8_t LogFile_write(uint8_t address_in) {
 }
 
 /* Output all the values in the cache and the flash through the given pointer */
-void LogFile_read(uint8_t *p_packet_out) {
-    uint8_t i;
-    FlashEditor_read(FLASH_EDITOR_LOG_BIT, p_packet_out, LOG_FILE_LENGTH);
+uint8_t LogFile_read(uint8_t *p_packet_out) {
+    uint8_t i, return_value;
+    return_value = FlashEditor_read(FLASH_EDITOR_LOG_BIT, p_packet_out, LOG_FILE_LENGTH);
+
     for (i = LOG_FILE_LENGTH; i != 0; i--) {
         p_packet_out[i - 1u] += LOG_FILE_CACHE[i - 1u];
     }
+    return return_value;
 }
 
 /* Tell the flash editor to write to the cache to the log portion */
 void LogFile_commit() {
-    FlashEditor_write(FLASH_EDITOR_LOG_BIT, LOG_FILE_CACHE, LOG_FILE_LENGTH);
+    LogFile_read(LOG_FILE_SAVED_FILE);
+    FlashEditor_write(FLASH_EDITOR_LOG_BIT, LOG_FILE_SAVED_FILE, LOG_FILE_LENGTH);
 
     /* Clear cache */
     memset(LOG_FILE_CACHE, 0, LOG_FILE_LENGTH);
 }
 
 /* Tell the flash editor to write 0 to the log portion of flash */
-uint8_t LogFile_clear() {
-    return FlashEditor_write(FLASH_EDITOR_LOG_BIT, 0, LOG_FILE_LENGTH);
+void LogFile_clear() {
+    FlashEditor_write(FLASH_EDITOR_LOG_BIT, 0, LOG_FILE_LENGTH);
+    /* Clear cache */
+    memset(LOG_FILE_CACHE, 0, LOG_FILE_LENGTH);
+    return;
 }
 
 /* Return 1 if there have been any additions to the cache and 0 if not */

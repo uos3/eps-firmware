@@ -31,9 +31,6 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
-/* Frame number for sending a packet that is unsolicited by the TOBC */
-#define SERIAL_UNSOLICITED_FRAME_NUM (0)
-
 /* Possible commands received from TOBC */
 /* Get all house keeping data */
 #define SERIAL_COMMAND_HOUSE_KEEPING (1)
@@ -45,7 +42,9 @@
 #define SERIAL_COMMAND_BATTERY_COMM (4)
 /* Set an OCP rail to OFF then ON */
 #define SERIAL_COMMAND_RESET_RAIL (5)
-
+/* Tell the EPS to no longer expect a continue */
+#define SERIAL_COMMAND_RESET_COMMS (0x7E)
+/* Allow the EPS to send the payload of the packet */
 #define SERIAL_COMMAND_CONTINUE (0x7F)
 
 /* Payload size for each command received from TOBC */
@@ -67,8 +66,6 @@
 #define SERIAL_PAYLOAD_SIZE_INVALID_LENGTH (0)
 /* Failed CRC on RX packet */
 #define SERIAL_PAYLOAD_SIZE_CORRUPTED_DATA (0)
-/* Failed CRC on flash read */
-#define SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL (0)
 
 /* Possible responses EPS can send to the TOBC */
 /* Return house keeping data */
@@ -79,8 +76,6 @@
 #define SERIAL_RESPONSE_SET_RAIL (131)
 /* Return battery response */
 #define SERIAL_RESPONSE_BATTERY_COMM (132)
-/* Return battery response */
-#define SERIAL_RESPONSE_OCP_EVENT (133)
 
 /* Data type is not recognised */
 #define SERIAL_RESPONSE_UNRECOGNISED_COMMAND (134)
@@ -90,8 +85,6 @@
 #define SERIAL_RESPONSE_INVALID_LENGTH (136)
 /* Failed CRC on RX packet */
 #define SERIAL_RESPONSE_CORRUPTED_DATA (137)
-/* Failed CRC on flash read */
-#define SERIAL_RESPONSE_FLASH_READ_FAIL (138)
 
 #define SERIAL_TX_HOUSEKEEPING_LENGTH (105)
 
@@ -108,6 +101,7 @@
 #define SERIAL_CONTINUE_RECEIVED (2)
 #define SERIAL_INVALID_CONTINUE_RECEIVED (3)
 #define SERIAL_RX_ERROR (4)
+#define SERIAL_COMMS_RESET (5)
 
 /* -------------------------------------------------------------------------
  * GLobals
@@ -115,9 +109,6 @@
 
 uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
 uint8_t SERIAL_RX_PACKET_LENGTH;
-
-uint8_t SERIAL_TX_UNSOLICITED_PACKET[SERIAL_HEADER_LENGTH + 1 + CRC_LENGTH];
-uint8_t SERIAL_TX_UNSOLICITED_PACKET_LENGTH;
 
 uint8_t SERIAL_TX_NOMINAL_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
 uint8_t SERIAL_TX_NOMINAL_PACKET_LENGTH;
@@ -128,12 +119,11 @@ uint8_t SERIAL_AWAITING_CONTINUE;
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
+void Serial_init();
 void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
                    uint8_t frame_number_in, uint8_t packet_length_in);
 uint8_t Serial_TX_nominal_header();
 uint8_t Serial_TX_nominal_payload();
-uint8_t Serial_TX_unsolicited_header();
-uint8_t Serial_TX_unsolicited_payload();
 uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
                        uint8_t *p_length_out, uint8_t *p_data_out);
 uint8_t Serial_process_RX();

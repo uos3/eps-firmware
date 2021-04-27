@@ -29,6 +29,10 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
+void Serial_init(){
+    SERIAL_AWAITING_CONTINUE = 0;
+}
+
 void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
                    uint8_t frame_number_in, uint8_t packet_length_in) {
     /* Prepare Header */
@@ -40,7 +44,7 @@ void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
 
 /*  */
 uint8_t Serial_TX_nominal_header() {
-    SERIAL_AWAITING_CONTINUE = 1;
+    SERIAL_AWAITING_CONTINUE = 0xFF;
     return Uart_send_bytes(SERIAL_TX_NOMINAL_PACKET, 2);
 }
 
@@ -48,18 +52,6 @@ uint8_t Serial_TX_nominal_payload() {
     SERIAL_AWAITING_CONTINUE = 0;
     return Uart_send_bytes(SERIAL_TX_NOMINAL_PACKET + 2,
                            SERIAL_TX_NOMINAL_PACKET_LENGTH);
-}
-
-/* Add header and append CRC and then pass packet to the driver */
-uint8_t Serial_TX_unsolicited_header() {
-    SERIAL_AWAITING_CONTINUE = 1;
-    return Uart_send_bytes(SERIAL_TX_UNSOLICITED_PACKET, 2);
-}
-
-uint8_t Serial_TX_unsolicited_payload() {
-    SERIAL_AWAITING_CONTINUE = 0;
-    return Uart_send_bytes(SERIAL_TX_UNSOLICITED_PACKET + 2,
-                    SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
 }
 
 /* Verify and read the data in the RX buffer */
@@ -94,8 +86,14 @@ uint8_t Serial_process_RX() {
                       SERIAL_RX_PACKET[0], SERIAL_TX_NOMINAL_PACKET_LENGTH);
         return SERIAL_RX_ERROR;
     }
+
+    if(SERIAL_RX_PACKET[1]==SERIAL_COMMAND_RESET_COMMS){
+        SERIAL_AWAITING_CONTINUE = 0;
+        return SERIAL_COMMS_RESET;
+    }
+
     /* Check if the TOBC is expecting a payload */
-    if (SERIAL_AWAITING_CONTINUE != 0) {
+    if (SERIAL_AWAITING_CONTINUE == 0xFF) {
         if (SERIAL_RX_PACKET[1] == SERIAL_COMMAND_CONTINUE) {
             return SERIAL_CONTINUE_RECEIVED;
         }

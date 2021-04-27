@@ -45,8 +45,6 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                 p_data_out[i] = 0xFF;
 
             }
-            /* Tell TOBC That reading has failed */
-            FlashEditor_failure();
             return 1;
         }
     }
@@ -66,8 +64,6 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                 p_data_out[i] = 0xFF;
 
             }
-            /* Tell TOBC That reading has failed */
-            FlashEditor_failure();
             return 1;
         }
     }
@@ -80,6 +76,8 @@ uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
     for (i = 0; i < length_in; i++) {
         FLASH_EDITOR_STORED_DATA[i] = p_data_in[i];
     }
+    /* For simulating flash failure */
+//    Crc_generate_invalid(FLASH_EDITOR_STORED_DATA, length_in);
     Crc_encode(FLASH_EDITOR_STORED_DATA, length_in);
     if (address_in == FLASH_EDITOR_CONFIG_BIT) {
         Flash_write(FLASH_EDITOR_CONFIG_ADDRESS, length_in + CRC_LENGTH,
@@ -90,14 +88,5 @@ uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
                     FLASH_EDITOR_STORED_DATA);
     }
     return 0;
-}
-
-void FlashEditor_failure() {
-    SERIAL_TX_UNSOLICITED_PACKET_LENGTH =
-    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH;
-    Serial_encode(SERIAL_TX_UNSOLICITED_PACKET,
-    SERIAL_RESPONSE_FLASH_READ_FAIL,
-                  SERIAL_UNSOLICITED_FRAME_NUM,
-                  SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
 }
 

@@ -24,6 +24,7 @@
 #include "applications/log_file/LogFile_public.h"
 
 #include "components/rails/Rails_public.h"
+#include "components/serial/Serial_public.h"
 #include "components/interrupts/Interrupts_public.h"
 
 #include "drivers/uart/Uart_public.h"
