@@ -35,20 +35,25 @@
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-void I2c_master_init(uint8_t selectclocksource_in, uint16_t prescalervalue_in, uint8_t modeselect_in) {
+void I2c_master_init(void) {
     /*Sets USCI registers while UCSWRST = 1*/
     UCB0CTL1 = UCSWRST;
     /*UCMST sets master mode, UCMODE_3 sets I2c mode and UCSYNC sets as synchronous (I2C)*/
     UCB0CTL0 = UCMST + UCMODE_3 + UCSYNC;
     /*Sets clock source, mode and keeps UCSWRST high*/
-    UCB0CTL1 = selectclocksource_in + modeselect_in + UCSWRST;
-    /*UCB0BR0 = 80, UCB0BR1 = 0 (SMCLK 8MHz) prescalervalue_in = 80*/
-    UCB0BR0 = prescalervalue_in & 0xFF;
-    UCB0BR1 = (prescalervalue_in >> 8) & 0xFF;
+    UCB0CTL1 = UCSSEL2 + UCSWRST;
+    /*1MHz/10 = 100kHz, standard for I2C*/
+    UCB0BR0 = 10;
+    UCB0BR1 = 0;
     /*Sets UCSWRST = 0 ready to go*/
     UCB0CTL1 &= ~UCSWRST;
     /* Configures P3.1 and P3.2 as SDA and SCL*/
-    P3SEL |= BIT1 + BIT2;
+    /*P3SEL |= BIT1 + BIT2;
+     * P3OUT |= BIT1 + BIT2;*/
+    /*Sets SDA and SCL for launchpad */
+    P1SEL |= BIT6 + BIT7;
+    P1SEL |= BIT6 + BIT7;
+    P1OUT |= BIT6 + BIT7;
 }
 
 uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_out) {
@@ -106,14 +111,14 @@ uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *
 uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_in) {
     int err, i = 0;
     mastertxdata = p_data_in;
-    mastertxindex = bytecount_in;
+    uint16_t mastertxindex;
     /*Set slave address*/
     UCB0I2CSA = slaveaddress_in;
     /*Send the start condition and put in transmit mode*/
     UCB0CTL1 |= UCTR + UCTXSTT;
     /*Wait for start to be sent and ready to transmit*/
     for(i = 0; i < 100;) {
-        if(UCB0CTL1 & UCTXSTT) {
+        if((IFG2 & UCB0TXIFG) == 0) {
             i++;
     }
         if(i == 100) {
@@ -124,7 +129,15 @@ uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t 
     err = I2c_check_ack(slaveaddress_in);
     /*Enable TX interrupt */
     if(err == 0) {
-        IE2 |= UCB0TXIE;
+        for(mastertxindex = bytecount_in; mastertxindex > 0; mastertxindex--) {
+            if (mastertxindex == 1) {
+                UCB0TXBUF = *mastertxdata;
+                UCB0CTL1 |= UCTXSTP;
+            } else {
+                UCB0TXBUF = *mastertxdata;
+                mastertxdata++;
+            }
+        }
     }
     UCB0CTL1 |= UCTXSTT;
     return err;

@@ -84,7 +84,7 @@
 						</toolChain>
 					</folderInfo>
 					<sourceEntries>
-						<entry excluding="tools/Uart_driver_rx_tx_test.c|tools/config_file_app_test|tools/toggle_rails_test|util/circular_buffers|lnk_msp430g2452.cmd|lnk_msp430fr2311.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
+						<entry excluding="tools/uart_driver_test/Uart_driver_rx_tx_test.c|tools/config_file_app_test|tools/toggle_rails_test|util/circular_buffers|lnk_msp430g2452.cmd|lnk_msp430fr2311.cmd" flags="VALUE_WORKSPACE_PATH|RESOLVED" kind="sourcePath" name=""/>
 					</sourceEntries>
 				</configuration>
 			</storageModule>
