@@ -38,16 +38,13 @@
 static uint8_t *masterrxdata;
 /*Buffer to store data to transmit*/
 static uint8_t *mastertxdata;
-/*Counter to make sure all characters received*/
-static uint16_t masterrxindex;
-/*Counter to make sure all characters transmitted*/
-static uint16_t mastertxindex;
+
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-void I2c_master_init(uint8_t selectclocksource_in, uint16_t prescalervalue_in, uint8_t modeselect_in);
+void I2c_master_init();
 uint8_t I2c_master_read(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_out);
 uint8_t I2c_master_write(uint8_t slaveaddress_in, uint8_t bytecount_in, uint8_t *p_data_in);
 static int I2c_check_ack(uint8_t slaveaddress_in);
