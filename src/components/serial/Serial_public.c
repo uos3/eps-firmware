@@ -25,30 +25,41 @@
  * GLOBALS
  * ------------------------------------------------------------------------- */
 
-uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
-uint8_t SERIAL_RX_PACKET_LENGTH;
-
-
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-/* Add header and append CRC and then pass packet to the driver */
-uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
-                  uint8_t frame_number_in, uint8_t packet_length_in) {
-
+void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
+                   uint8_t frame_number_in, uint8_t packet_length_in) {
     /* Prepare Header */
     p_packet_in[0] = frame_number_in;
     p_packet_in[1] = response_type_in;
-    crc_encode(p_packet_in, packet_length_in);
+    /* Add CRC */
+    Crc_encode(p_packet_in, packet_length_in);
+}
 
-    Uart_send_bytes(p_packet_in, 2);
-    __delay_cycles(500000);
-    /* Send data */
-    uint8_t volatile return_value = Uart_send_bytes(
-            p_packet_in+2, packet_length_in);
-    __no_operation();
-    return return_value;
+/*  */
+uint8_t Serial_TX_nominal_header() {
+    SERIAL_AWAITING_CONTINUE = 1;
+    return Uart_send_bytes(SERIAL_TX_NOMINAL_PACKET, 2);
+}
+
+uint8_t Serial_TX_nominal_payload() {
+    SERIAL_AWAITING_CONTINUE = 0;
+    return Uart_send_bytes(SERIAL_TX_NOMINAL_PACKET + 2,
+                           SERIAL_TX_NOMINAL_PACKET_LENGTH);
+}
+
+/* Add header and append CRC and then pass packet to the driver */
+uint8_t Serial_TX_unsolicited_header() {
+    SERIAL_AWAITING_CONTINUE = 1;
+    return Uart_send_bytes(SERIAL_TX_UNSOLICITED_PACKET, 2);
+}
+
+uint8_t Serial_TX_unsolicited_payload() {
+    SERIAL_AWAITING_CONTINUE = 0;
+    return Uart_send_bytes(SERIAL_TX_UNSOLICITED_PACKET + 2,
+                    SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
 }
 
 /* Verify and read the data in the RX buffer */
@@ -59,15 +70,9 @@ uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
     *p_frame_number_out = SERIAL_RX_PACKET[0];
 
     /* Check if CRC is valid (0 if valid, 1 if invalid) */
-    *p_valid_packet_out = crc_decode(
+    *p_valid_packet_out = Crc_decode(
             SERIAL_RX_PACKET,
             SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH + 2);
-
-//    for (i = 0; i < SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH; i++) {
-//        expected_crc[i] = SERIAL_RX_PACKET[i];
-//    }
-
-//    crc_encode(expected_crc, SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH);
 
     /* Output packet length */
     *p_length_out = SERIAL_RX_PACKET_LENGTH + SERIAL_HEADER_LENGTH;
@@ -83,10 +88,20 @@ uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
 uint8_t Serial_process_RX() {
     /* Get the header and ensure it is the right length */
     if (Uart_recv_bytes(SERIAL_RX_PACKET, 2) != 0) {
-        Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_INVALID_HEADER,
-                  SERIAL_RX_PACKET[0],
-                  SERIAL_PAYLOAD_SIZE_INVALID_HEADER + SERIAL_HEADER_LENGTH);
-        return 1;
+        SERIAL_TX_NOMINAL_PACKET_LENGTH = SERIAL_RESPONSE_INVALID_HEADER
+                + SERIAL_HEADER_LENGTH;
+        Serial_encode(SERIAL_TX_NOMINAL_PACKET, SERIAL_RESPONSE_INVALID_HEADER,
+                      SERIAL_RX_PACKET[0], SERIAL_TX_NOMINAL_PACKET_LENGTH);
+        return SERIAL_RX_ERROR;
+    }
+    /* Check if the TOBC is expecting a payload */
+    if (SERIAL_AWAITING_CONTINUE != 0) {
+        if (SERIAL_RX_PACKET[1] == SERIAL_COMMAND_CONTINUE) {
+            return SERIAL_CONTINUE_RECEIVED;
+        }
+        else {
+            return SERIAL_INVALID_CONTINUE_RECEIVED;
+        }
     }
     /* Check how long the expected payload length is */
     switch (SERIAL_RX_PACKET[1]) {
@@ -107,24 +122,25 @@ uint8_t Serial_process_RX() {
         break;
     default:
         /* Invalid command */
-        SERIAL_TX_PACKET[SERIAL_HEADER_LENGTH] = SERIAL_RX_PACKET[1];
-        Serial_TX(
-                SERIAL_TX_PACKET,
-                SERIAL_RESPONSE_UNRECOGNISED_COMMAND,
-                SERIAL_RX_PACKET[0],
-                SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND + SERIAL_HEADER_LENGTH);
+        SERIAL_TX_NOMINAL_PACKET[SERIAL_HEADER_LENGTH] = SERIAL_RX_PACKET[1];
+        SERIAL_TX_NOMINAL_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_UNRECOGNISED_COMMAND
+                + SERIAL_HEADER_LENGTH;
+        Serial_encode(SERIAL_TX_NOMINAL_PACKET, SERIAL_RESPONSE_UNRECOGNISED_COMMAND,
+                      SERIAL_RX_PACKET[0], SERIAL_TX_NOMINAL_PACKET_LENGTH);
+
         SERIAL_RX_PACKET_LENGTH = 0;
-        return 2;
+        return SERIAL_RX_ERROR;
     }
 
     /* Fill the SERIAL_RX_PACKET with the payload and CRC.
      * If the receive function failed, tell the TOBC  */
-    if( Uart_recv_bytes(&SERIAL_RX_PACKET[2],
-                           SERIAL_RX_PACKET_LENGTH + CRC_LENGTH)!=0){
-        Serial_TX(SERIAL_TX_PACKET, SERIAL_RESPONSE_INVALID_LENGTH,
-                  SERIAL_RX_PACKET[0],
-                  SERIAL_PAYLOAD_SIZE_INVALID_LENGTH + SERIAL_HEADER_LENGTH);
-        return 3;
+    if (Uart_recv_bytes(&SERIAL_RX_PACKET[2],
+                        SERIAL_RX_PACKET_LENGTH + CRC_LENGTH) != 0) {
+        SERIAL_TX_NOMINAL_PACKET_LENGTH = SERIAL_PAYLOAD_SIZE_INVALID_LENGTH
+                + SERIAL_HEADER_LENGTH;
+        Serial_encode(SERIAL_TX_NOMINAL_PACKET, SERIAL_RESPONSE_INVALID_LENGTH,
+                      SERIAL_RX_PACKET[0], SERIAL_TX_NOMINAL_PACKET_LENGTH);
+        return SERIAL_RX_ERROR;
     }
-    return 0;
+    return SERIAL_HEADER_RECEIVED;
 }

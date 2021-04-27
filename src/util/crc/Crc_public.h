@@ -39,7 +39,8 @@
  * ------------------------------------------------------------------------- */
 
 uint16_t Crc(uint8_t Data, uint16_t Syndrome);
-void crc_encode(uint8_t *B, uint32_t octets);
-uint8_t crc_decode(uint8_t *B, uint32_t octets);
+void Crc_encode(uint8_t *B, uint32_t octets);
+uint8_t Crc_decode(uint8_t *B, uint32_t octets);
+void Crc_generate_invalid(uint8_t *p_packet_in, uint32_t length_in);
 
 #endif /* UTIL_CRC_CRC_PUBLIC_H_ */

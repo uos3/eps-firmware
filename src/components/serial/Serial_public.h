@@ -46,6 +46,8 @@
 /* Set an OCP rail to OFF then ON */
 #define SERIAL_COMMAND_RESET_RAIL (5)
 
+#define SERIAL_COMMAND_CONTINUE (0x7F)
+
 /* Payload size for each command received from TOBC */
 /* Get all house keeping data */
 #define SERIAL_PAYLOAD_SIZE_HOUSE_KEEPING (0)
@@ -91,27 +93,49 @@
 /* Failed CRC on flash read */
 #define SERIAL_RESPONSE_FLASH_READ_FAIL (138)
 
+#define SERIAL_TX_HOUSEKEEPING_LENGTH (105)
+
 /* Define TX packet lengths */
 #define SERIAL_HEADER_LENGTH (2)
-#define SERIAL_TX_PACKET_TOTAL_LENGTH (SERIAL_HEADER_LENGTH + HOUSE_KEEPING_DATA_LENGTH + CRC_LENGTH)
+/* Maximum length of the tx packet is with house jeeping that has 105 bytes of payload */
+#define SERIAL_TX_PACKET_TOTAL_LENGTH (SERIAL_HEADER_LENGTH + SERIAL_TX_HOUSEKEEPING_LENGTH + CRC_LENGTH)
 
 /* Length of RX Header + Payload + CRC */
 #define SERIAL_RX_PACKET_MAX_LENGTH (7)
+
+/* Defines for the serial process RX function */
+#define SERIAL_HEADER_RECEIVED (1)
+#define SERIAL_CONTINUE_RECEIVED (2)
+#define SERIAL_INVALID_CONTINUE_RECEIVED (3)
+#define SERIAL_RX_ERROR (4)
 
 /* -------------------------------------------------------------------------
  * GLobals
  * ------------------------------------------------------------------------- */
 
-uint8_t SERIAL_TX_PACKET[SERIAL_HEADER_LENGTH + 1 + CRC_LENGTH];
+uint8_t SERIAL_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
+uint8_t SERIAL_RX_PACKET_LENGTH;
+
+uint8_t SERIAL_TX_UNSOLICITED_PACKET[SERIAL_HEADER_LENGTH + 1 + CRC_LENGTH];
+uint8_t SERIAL_TX_UNSOLICITED_PACKET_LENGTH;
+
+uint8_t SERIAL_TX_NOMINAL_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
+uint8_t SERIAL_TX_NOMINAL_PACKET_LENGTH;
+
+uint8_t SERIAL_AWAITING_CONTINUE;
 
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-uint8_t Serial_TX(uint8_t *p_packet_in, uint8_t response_type_in,
-                  uint8_t frame_number_in, uint8_t packet_length_in);
-uint8_t Serial_read_RX(uint8_t *p_frame_number_out,
-                        uint8_t *p_valid_packet_out, uint8_t *p_length_out, uint8_t *p_data_out);
+void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
+                   uint8_t frame_number_in, uint8_t packet_length_in);
+uint8_t Serial_TX_nominal_header();
+uint8_t Serial_TX_nominal_payload();
+uint8_t Serial_TX_unsolicited_header();
+uint8_t Serial_TX_unsolicited_payload();
+uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
+                       uint8_t *p_length_out, uint8_t *p_data_out);
 uint8_t Serial_process_RX();
 
 #endif /* COMPONENTS_SERIAL_SERIAL_PUBLIC_H_ */

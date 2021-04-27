@@ -139,10 +139,28 @@ __interrupt void Timer_A_CCR1_ISR(void) {
 #pragma vector = USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void) {
     /* Collect arriving data into the buffer */
-    if (Serial_process_RX() == 0) {
-        INTERRUPTS_FLAGS |= INTERRUPTS_UART_FLAG;
+    switch (Serial_process_RX()) {
+    case SERIAL_HEADER_RECEIVED:
+        INTERRUPTS_FLAGS |= INTERRUPTS_UART_HEADER_FLAG;
         __bis_SR_register_on_exit(GIE);
         __bic_SR_register_on_exit(LPM3_bits);
+        break;
+    case SERIAL_CONTINUE_RECEIVED:
+        INTERRUPTS_FLAGS |= INTERRUPTS_UART_CONTINUE_FLAG;
+        __bis_SR_register_on_exit(GIE);
+        __bic_SR_register_on_exit(LPM3_bits);
+        break;
+    case SERIAL_INVALID_CONTINUE_RECEIVED:
+        INTERRUPTS_FLAGS |= INTERRUPTS_UART_INVALID_CONTINUE_FLAG;
+        __bis_SR_register_on_exit(GIE);
+        __bic_SR_register_on_exit(LPM3_bits);
+        break;
+    case SERIAL_RX_ERROR:
+        Serial_TX_nominal_header();
+        break;
+    default:
+        /* Invalid RX so MCU should sleep until OBC tries again */
+        break;
     }
 }
 

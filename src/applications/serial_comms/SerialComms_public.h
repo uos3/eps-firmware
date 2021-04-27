@@ -36,12 +36,12 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
+#define SERIAL_COMMS_VALID_CONTINUE (0)
+#define SERIAL_COMMS_INVALID_CONTINUE (1)
+
 /* -------------------------------------------------------------------------
  * GLOBALS
  * ------------------------------------------------------------------------- */
-
-uint8_t SERIAL_COMMS_RX_PACKET[SERIAL_RX_PACKET_MAX_LENGTH];
-uint8_t SERIAL_COMMS_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
 
 /* -------------------------------------------------------------------------
  * STRUCTS
@@ -50,6 +50,7 @@ uint8_t SERIAL_COMMS_PACKET[SERIAL_TX_PACKET_TOTAL_LENGTH];
 /* -------------------------------------------------------------------------
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
-int SerialComms_process();
+void SerialComms_continue(uint8_t valid_continue_in);
+void SerialComms_prepare_packet();
 
 #endif /* APPLICATIONS_SERIAL_COMMS_SERIALCOMMS_PUBLIC_H_ */

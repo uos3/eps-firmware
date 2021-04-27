@@ -15,6 +15,16 @@
 #include <event_handlers/serial_event/SerialEvent_public.h>
 
 
-int SerialEvent_event(){
-    return SerialComms_process();
+void SerialEvent_event(uint8_t event_type_in){
+    switch(event_type_in){
+    case SERIAL_EVENT_PREPARE_PACKET:
+        SerialComms_prepare_packet();
+        break;
+    case SERIAL_EVENT_CONTINUE:
+        SerialComms_continue(SERIAL_COMMS_VALID_CONTINUE);
+        break;
+    case SERIAL_EVENT_INVALID_CONTINUE:
+        SerialComms_continue(SERIAL_COMMS_INVALID_CONTINUE);
+        break;
+    }
 }

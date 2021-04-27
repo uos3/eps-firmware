@@ -25,7 +25,7 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
         Flash_read(FLASH_EDITOR_CONFIG_ADDRESS, CONFIG_FILE_LENGTH + CRC_LENGTH,
                    FLASH_EDITOR_STORED_DATA);
         /* Check if CRC is passed */
-        if (crc_decode(FLASH_EDITOR_STORED_DATA,
+        if (Crc_decode(FLASH_EDITOR_STORED_DATA,
         CONFIG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
             /* Remove config identifier bit */
             address_in &= ~FLASH_EDITOR_CONFIG_BIT;
@@ -46,10 +46,7 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
 
             }
             /* Tell TOBC That reading has failed */
-            Serial_TX(
-                    SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
-                    SERIAL_UNSOLICITED_FRAME_NUM,
-                    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
+            FlashEditor_failure();
             return 1;
         }
     }
@@ -58,8 +55,8 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
         Flash_read(FLASH_EDITOR_LOG_ADDRESS, LOG_FILE_LENGTH + CRC_LENGTH,
                    FLASH_EDITOR_STORED_DATA);
         /* Check if CRC is passed */
-        if (crc_decode(FLASH_EDITOR_STORED_DATA,
-                       LOG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
+        if (Crc_decode(FLASH_EDITOR_STORED_DATA,
+        LOG_FILE_LENGTH + 2) == CRC_NO_ERROR_DETECTED) {
             /* If we are asking for the ocp_reset byte */
             p_data_out[0] = FLASH_EDITOR_STORED_DATA[address_in];
         }
@@ -70,10 +67,7 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
 
             }
             /* Tell TOBC That reading has failed */
-            Serial_TX(
-                    SERIAL_TX_PACKET, SERIAL_RESPONSE_FLASH_READ_FAIL,
-                    SERIAL_UNSOLICITED_FRAME_NUM,
-                    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH);
+            FlashEditor_failure();
             return 1;
         }
     }
@@ -86,7 +80,7 @@ uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
     for (i = 0; i < length_in; i++) {
         FLASH_EDITOR_STORED_DATA[i] = p_data_in[i];
     }
-    crc_encode(FLASH_EDITOR_STORED_DATA, length_in);
+    Crc_encode(FLASH_EDITOR_STORED_DATA, length_in);
     if (address_in == FLASH_EDITOR_CONFIG_BIT) {
         Flash_write(FLASH_EDITOR_CONFIG_ADDRESS, length_in + CRC_LENGTH,
                     FLASH_EDITOR_STORED_DATA);
@@ -96,5 +90,14 @@ uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
                     FLASH_EDITOR_STORED_DATA);
     }
     return 0;
+}
+
+void FlashEditor_failure() {
+    SERIAL_TX_UNSOLICITED_PACKET_LENGTH =
+    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH;
+    Serial_encode(SERIAL_TX_UNSOLICITED_PACKET,
+    SERIAL_RESPONSE_FLASH_READ_FAIL,
+                  SERIAL_UNSOLICITED_FRAME_NUM,
+                  SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
 }
 

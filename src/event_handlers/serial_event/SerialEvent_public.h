@@ -33,6 +33,11 @@
  * DEFINES
  * ------------------------------------------------------------------------- */
 
+
+#define SERIAL_EVENT_PREPARE_PACKET (0)
+#define SERIAL_EVENT_CONTINUE (1)
+#define SERIAL_EVENT_INVALID_CONTINUE (2)
+
 /* -------------------------------------------------------------------------
  * STRUCTS
  * ------------------------------------------------------------------------- */
@@ -41,7 +46,7 @@
  * FUNCTIONS
  * ------------------------------------------------------------------------- */
 
-int SerialEvent_event();
+void SerialEvent_event(uint8_t event_type_in);
 
 
 

@@ -42,9 +42,22 @@ int main(void) {
         /* For each flag check whether it is active and should be dealt with */
 
         /* Check for UART interrupt */
-        if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_FLAG) != 0) {
-            INTERRUPTS_FLAGS &= ~INTERRUPTS_UART_FLAG;  // Clear flag
-            SerialEvent_event();
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_HEADER_FLAG) != 0) {
+            INTERRUPTS_FLAGS &= ~INTERRUPTS_UART_HEADER_FLAG;  // Clear flag
+            SerialEvent_event(SERIAL_EVENT_PREPARE_PACKET);
+        }
+
+
+        /* Check for UART interrupt */
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_CONTINUE_FLAG) != 0) {
+            INTERRUPTS_FLAGS &= ~INTERRUPTS_UART_CONTINUE_FLAG;  // Clear flag
+            SerialEvent_event(SERIAL_EVENT_CONTINUE);
+        }
+
+        /* Check for UART interrupt */
+        if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_INVALID_CONTINUE_FLAG) != 0) {
+            INTERRUPTS_FLAGS &= ~INTERRUPTS_UART_INVALID_CONTINUE_FLAG;  // Clear flag
+            SerialEvent_event(SERIAL_EVENT_INVALID_CONTINUE);
         }
 
         /* Check for interrupt from timer acting as TOBC watchdog */

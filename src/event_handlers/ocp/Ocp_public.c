@@ -26,12 +26,15 @@ int Ocp_event(uint8_t rail_mask) {
     RailEditor_set_rails(rail_mask, new_rail_status);
 
     /* Include rails with OCP events and what they have been set to */
-    OCP_PACKET[0] = rail_mask;
-    OCP_PACKET[1] = RAILS_CURRENT_STATE;
+    SERIAL_TX_UNSOLICITED_PACKET[SERIAL_HEADER_LENGTH] = rail_mask;
+    SERIAL_TX_UNSOLICITED_PACKET[SERIAL_HEADER_LENGTH+1] = RAILS_CURRENT_STATE;
 
-    Serial_TX(OCP_PACKET, SERIAL_RESPONSE_OCP_EVENT,
-    SERIAL_UNSOLICITED_FRAME_NUM,
-              OCP_PACKET_SIZE);
+    SERIAL_TX_UNSOLICITED_PACKET_LENGTH =
+    SERIAL_PAYLOAD_SIZE_FLASH_READ_FAIL + SERIAL_HEADER_LENGTH;
+    Serial_encode(SERIAL_TX_UNSOLICITED_PACKET,
+                  SERIAL_RESPONSE_OCP_EVENT,
+                  SERIAL_UNSOLICITED_FRAME_NUM,
+                  SERIAL_TX_UNSOLICITED_PACKET_LENGTH);
 
     /* For each rail that has tripped, iterate its value in the log */
     for (i = 0; i < 6; i++) {
