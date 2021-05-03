@@ -70,7 +70,7 @@ uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
     return 0;
 }
 
-uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
+void FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
                           uint8_t length_in) {
     uint8_t i;
     for (i = 0; i < length_in; i++) {
@@ -87,6 +87,5 @@ uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
         Flash_write(FLASH_EDITOR_LOG_ADDRESS, length_in + CRC_LENGTH,
                     FLASH_EDITOR_STORED_DATA);
     }
-    return 0;
 }
 

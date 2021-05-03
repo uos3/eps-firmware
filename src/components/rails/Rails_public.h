@@ -57,7 +57,7 @@ uint8_t RAILS_CURRENT_STATE;
  * ------------------------------------------------------------------------- */
 
 void Rails_init();
-uint8_t Rails_get_data(uint8_t *p_packet_out);
+void Rails_get_data(uint8_t *p_packet_out);
 void Rails_set(uint8_t rail_num_in, uint8_t new_state_in);
 uint8_t Rails_convert_rail(uint8_t rail_num_in);
 

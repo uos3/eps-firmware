@@ -35,7 +35,6 @@ uint8_t Battery_TX(uint8_t command_in, uint16_t data_in) {
                                 BATTERY_PACKET);
     }
 }
-;
 
 uint16_t Battery_RX() {
     uint8_t valid_packet_check;
@@ -53,5 +52,4 @@ uint16_t Battery_RX() {
     }
 
 }
-;
 

@@ -26,7 +26,6 @@
 /* Internal */
 #include "applications/config_file/ConfigFile_public.h"
 #include "applications/log_file/LogFile_public.h"
-#include "components/serial/Serial_public.h"
 #include "drivers/flash/Flash_public.h"
 
 /* -------------------------------------------------------------------------
@@ -56,7 +55,7 @@
 
 uint8_t FlashEditor_read(uint8_t address_in, uint8_t *p_data_out,
                          uint8_t length_in);
-uint8_t FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
-                          uint8_t length_in);
+void FlashEditor_write(uint8_t address_in, uint8_t *p_data_in,
+                       uint8_t length_in);
 
 #endif /* COMPONENTS_FLASH_EDITOR_FLASHEDITOR_PUBLIC_H_ */

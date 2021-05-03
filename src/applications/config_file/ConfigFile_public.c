@@ -1,4 +1,4 @@
-    /*
+/*
  *
  * @file ConfigFile_public.c
  * @author Roberto Holmes (rh3u17@soton.ac.uk / robertoholmes@live.com)
@@ -49,7 +49,7 @@ uint8_t ConfigFile_read_16bit(uint8_t address, uint16_t *p_data_out) {
     return return_value;
 }
 
-uint8_t ConfigFile_write(uint8_t *p_data_in) {
+void ConfigFile_write(uint8_t *p_data_in) {
     /* Tell the flash editor to write the data to the config
      * section of the flash. */
     return FlashEditor_write(FLASH_EDITOR_CONFIG_BIT, p_data_in,

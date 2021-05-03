@@ -39,7 +39,7 @@ void Rails_init() {
 }
 
 /* Add all data available through the multiplexers to the packet */
-uint8_t Rails_get_data(uint8_t *p_packet_out) {
+void Rails_get_data(uint8_t *p_packet_out) {
     uint8_t j, i = 0;
 
     /* Iterate through all 32 MUX1 channels */
@@ -64,7 +64,7 @@ uint8_t Rails_get_data(uint8_t *p_packet_out) {
                                       p_packet_out, i);
         }
     }
-    return 0;
+    return;
 }
 
 /* Turn the rail in the ith bit of the rail_num_in byte off if new_state_in = 0

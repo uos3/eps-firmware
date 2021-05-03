@@ -23,7 +23,6 @@
 #include <stdint.h>
 
 /* Internal */
-#include "applications/house_keeping/HouseKeeping_public.h"
 #include "drivers/uart/Uart_public.h"
 #include "util/crc/Crc_public.h"
 
@@ -124,8 +123,8 @@ void Serial_encode(uint8_t *p_packet_in, uint8_t response_type_in,
                    uint8_t frame_number_in, uint8_t packet_length_in);
 uint8_t Serial_TX_nominal_header();
 uint8_t Serial_TX_nominal_payload();
-uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
-                       uint8_t *p_length_out, uint8_t *p_data_out);
+void Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
+                    uint8_t *p_length_out, uint8_t *p_data_out);
 uint8_t Serial_process_RX();
 
 #endif /* COMPONENTS_SERIAL_SERIAL_PUBLIC_H_ */

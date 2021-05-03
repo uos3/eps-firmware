@@ -55,7 +55,7 @@ uint8_t Serial_TX_nominal_payload() {
 }
 
 /* Verify and read the data in the RX buffer */
-uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
+void Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
                        uint8_t *p_length_out, uint8_t *p_data_out) {
     uint8_t i;
     /* Output frame number used by TOBC */
@@ -73,7 +73,7 @@ uint8_t Serial_read_RX(uint8_t *p_frame_number_out, uint8_t *p_valid_packet_out,
         p_data_out[i] = SERIAL_RX_PACKET[i];
     }
 
-    return 0;
+    return;
 }
 
 /* Deal with an RX event by putting the data in the packet buffer */

@@ -44,7 +44,7 @@
  * ------------------------------------------------------------------------- */
 uint8_t ConfigFile_read_8bit(uint8_t address, uint8_t *p_data_out);
 uint8_t ConfigFile_read_16bit(uint8_t address, uint16_t *p_data_out);
-uint8_t ConfigFile_write(uint8_t *p_data_in);
+void ConfigFile_write(uint8_t *p_data_in);
 
 
 #endif /* APPLICATIONS_CONFIG_FILE_CONFIGFILE_PUBLIC_H_ */
