@@ -32,7 +32,7 @@ int main(void) {
 
     /* Enable interrupts */
     init_interrupts();
-
+    //uint16_t battery_data;
     /* ---- MAIN LOOP ---- */
     while (1) {
 
@@ -40,6 +40,7 @@ int main(void) {
         InterruptManager_reset_timer(INTERRUPT_MANAGER_WATCHDOG_TIMER | INTERRUPT_MANAGER_WAKE_TIMER);
 
         /* For each flag check whether it is active and should be dealt with */
+        //battery_data = BatteryComms_TX_RX(0x01, 0x00);
 
         /* Check for UART interrupt */
         if ((INTERRUPTS_FLAGS & INTERRUPTS_UART_HEADER_FLAG) != 0) {

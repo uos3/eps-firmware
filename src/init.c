@@ -42,12 +42,14 @@ void init_drivers() {
     Mux2_init();
     Uart_init();
     Flash_init();
+    I2c_master_init(BATTERY_I2C_ADDR);
 }
 
 /* Loops through each component to initialise it */
 void init_components() {
     Rails_init();
     Serial_init();
+    
 }
 
 /* Loops through each application to initialise it */

@@ -22,16 +22,19 @@
 /* internal */
 #include "applications/interrupt_manager/InterruptManager_public.h"
 #include "applications/log_file/LogFile_public.h"
+#include "applications/battery_comms/BatteryComms_public.h"
 
 #include "components/rails/Rails_public.h"
 #include "components/serial/Serial_public.h"
 #include "components/interrupts/Interrupts_public.h"
+#include "components/battery/Battery_public.h"
 
 #include "drivers/uart/Uart_public.h"
 #include "drivers/gpio/mux/Mux_public.h"
 #include "drivers/gpio/mux2/Mux2_public.h"
 #include "drivers/gpio/adc/Adc_public.h"
 #include "drivers/flash/Flash_public.h"
+#include "drivers/i2c/I2c_public.h" //Needed only for battery RX/TX operation
 
 /* -------------------------------------------------------------------------
  * GLOBALS
@@ -55,5 +58,5 @@ void init_components();
 void init_applications();
 void init_startup();
 void init_interrupts();
-
+void I2c_master_init(uint8_t slaveaddress_in);
 #endif /* INIT_H_ */
